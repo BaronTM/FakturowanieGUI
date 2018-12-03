@@ -5,10 +5,10 @@ public class Klient {
 	private String imie;
 	private String nazwisko;
 	private String nazwaFirmy;
-	private int nip; // 10 cyfr
+	private long nip; // 10 cyfr
 	private String adres;
 
-	public Klient(String imie, String nazwisko, String nazwaFirmy, int nip, String adres) {
+	public Klient(String imie, String nazwisko, String nazwaFirmy, long nip, String adres) {
 		this.imie = imie;
 		this.nazwisko = nazwisko;
 		this.nazwaFirmy = nazwaFirmy;
@@ -16,20 +16,20 @@ public class Klient {
 		this.adres = adres;
 	}
 	
-	public Klient(String imie, String nazwisko, String nazwaFirmy, int nip) {
+	public Klient(String imie, String nazwisko, String nazwaFirmy, long nip) {
 		this.imie = imie;
 		this.nazwisko = nazwisko;
 		this.nazwaFirmy = nazwaFirmy;
 		this.nip = nip;
 	}
 
-	public Klient(String imie, String nazwisko, int nip) {
+	public Klient(String imie, String nazwisko, long nip) {
 		this.imie = imie;
 		this.nazwisko = nazwisko;
 		this.nip = nip;
 	}
 	
-	public Klient(String nazwaFirmy, int nip) {
+	public Klient(String nazwaFirmy, long nip) {
 		this.nazwaFirmy = nazwaFirmy;
 		this.nip = nip;
 	}
@@ -45,7 +45,7 @@ public class Klient {
 		this.nazwaFirmy = nazwaFirmy;
 	}
 	
-	public void setNip(int nip) {
+	public void setNip(long nip) {
 		this.nip = nip;
 	}
 	
@@ -65,11 +65,48 @@ public class Klient {
 		return nazwaFirmy;
 	}
 	
-	public int getNip() {
+	public long getNip() {
 		return nip;
 	}
 	
 	public String getAdres() {
 		return adres;
+	}
+	
+	public String nipToString() {
+		if ((nip > 999999999l) && (nip < 10000000000l)) {
+			String tekst = "";
+			char[] znaki = Long.toString(nip).toCharArray();
+			for (int i = 0; i < znaki.length; i++) {
+				tekst = tekst + znaki[i];
+				if (i == 2 || i == 5 || i == 7) {
+					tekst = tekst + "-";
+				}
+			}
+			return tekst;
+		} else {
+			return "";
+		}
+	}
+	
+	public String toString() {
+		String tekst = "";
+		if (nazwaFirmy != "" && nazwaFirmy != null) {
+			tekst = tekst + nazwaFirmy + "\n";
+		}
+		if (imie != "" && imie != null && nazwisko != "" && nazwisko != null) {
+			tekst = tekst + imie + " " + nazwisko + "\n";
+		}
+		if (adres != "" && adres != null) {
+			String[] parts = adres.split(", ");
+			for (String s : parts) {
+				tekst = tekst + s + "\n";
+			}
+		}
+		if ((nip > 999999999l) && (nip < 10000000000l)) {
+			tekst = tekst + "NIP " + this.nipToString();		
+		}
+		
+		return tekst;
 	}
 }
