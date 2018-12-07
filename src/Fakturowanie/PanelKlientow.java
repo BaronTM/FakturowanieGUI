@@ -5,7 +5,9 @@ import java.awt.Color;
 import java.awt.Font;
 
 import javax.swing.JButton;
+import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
@@ -21,6 +23,8 @@ public class PanelKlientow extends JPanel{
 	private JPanel panelPodListe;
 	private JPanel panelPodListeFaktur;
 	private JButton nowyKlient;
+	private JInternalFrame ramkaDodawania;
+	private JPanel panelDodawania;
 	
 	public PanelKlientow() {
 		super();
@@ -71,12 +75,21 @@ public class PanelKlientow extends JPanel{
 		
 		nowyKlient = new JButton("NOWY KLIENT");
 		nowyKlient.setBounds(550, 330, 150, 30);
-				
+		
+		//------- panel dodawania
+		ramkaDodawania = new JInternalFrame("Dodawanie Nowego Klienta", false, true, false, false);
+		panelDodawania = new JPanel();
+		panelDodawania.setBounds(0, 0, 300, 300);
+		ramkaDodawania.add(panelDodawania);
+		ramkaDodawania.setBounds(30, 30, 300, 300);
+		ramkaDodawania.setVisible(true);
+		
 		this.add(tytul);
 		this.add(panelPodListe);
 		this.add(fakturyLab);
 		this.add(panelPodListeFaktur);
 		this.add(nowyKlient);
+		this.add(ramkaDodawania);
 	}
 	
 }
