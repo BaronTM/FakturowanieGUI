@@ -51,13 +51,13 @@ public class Aplikacja {
 		
 		ramka.getContentPane().add(panelMenu);
 		ramka.getContentPane().add(panelFunkcyjny);
-		ramka.add(panelNowejFaktury);	
-		ramka.add(panelUstawien);
-		ramka.add(panelPrzegladFaktur);
-		ramka.add(panelKlientow);
-		ramka.add(panelWystawcow);
-		ramka.add(panelProduktow);
-		ramka.add(panelLimit);
+		ramka.getContentPane().add(panelNowejFaktury);	
+		ramka.getContentPane().add(panelUstawien);
+		ramka.getContentPane().add(panelPrzegladFaktur);
+		ramka.getContentPane().add(panelKlientow);
+		ramka.getContentPane().add(panelWystawcow);
+		ramka.getContentPane().add(panelProduktow);
+		ramka.getContentPane().add(panelLimit);
 		
 		ramka.setLocationRelativeTo(null);
 		ramka.setVisible(true);
