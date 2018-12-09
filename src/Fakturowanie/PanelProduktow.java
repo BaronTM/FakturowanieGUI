@@ -119,10 +119,12 @@ public class PanelProduktow extends JPanel{
 	}
 	
 	public void odswiezListy() {
-		// ---------------------------- TESTOWE
+		for (int k = modelListyProduktow.getRowCount(); k > 0; k--) {
+			modelListyProduktow.removeRow(0);
+		}
 		int i = 0;
 		for (Produkt p : Historia.getProdukty()) {
-			Object[] element = null;
+			Object[] element = new Object[5];
 			element[0] = i + 1;
 			element[1] = p.getNazwa();
 			element[2] = p.getCenaNetto();
@@ -210,6 +212,17 @@ public class PanelProduktow extends JPanel{
 				nazwaTxt.setText("");
 				cenaTxt.setText("0.00");
 				jednostkaCB.setSelectedIndex(0);
+			});
+			
+			dodaj.addActionListener(l -> {
+				String[] parts = cenaTxt.getText().split(",");
+				float part1 = Float.parseFloat(parts[0]);
+				float part2 = Float.parseFloat(parts[1]) / 100;
+				Historia.getProdukty().add(new Produkt(nazwaTxt.getText(), (part1 + part2), ((String) jednostkaCB.getSelectedItem())));
+				nazwaTxt.setText("");
+				cenaTxt.setText("0.00");
+				jednostkaCB.setSelectedIndex(0);
+				odswiezListy();
 			});
 
 			this.add(panelDodawania);

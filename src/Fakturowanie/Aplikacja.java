@@ -59,6 +59,7 @@ public class Aplikacja {
 		ramka.getContentPane().add(panelProduktow);
 		ramka.getContentPane().add(panelLimit);
 		
+		ramka.setResizable(false);
 		ramka.setLocationRelativeTo(null);
 		ramka.setVisible(true);
 	}
