@@ -3,12 +3,26 @@ package Fakturowanie;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
+import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.JFormattedTextField.AbstractFormatter;
+import javax.swing.JFormattedTextField.AbstractFormatterFactory;
+import javax.swing.text.InternationalFormatter;
+import javax.swing.text.MaskFormatter;
 
 public class PanelProduktow extends JPanel{
 	
@@ -20,13 +34,25 @@ public class PanelProduktow extends JPanel{
 	private JScrollPane listaFakturScroll;
 	private JPanel panelPodListe;
 	private JPanel panelPodListeFaktur;
-	private JButton nowyWystawca;
+	private JPanel zaslona;
+	private JButton nowyProdukt;
+	private JLayeredPane layeredPane;
+	private RamkaDodawaniaProduktow ramkaDodawania;
+	private DefaultTableModel modelListyProduktow;
 	
 	public PanelProduktow() {
 		super();
 		this.setBounds(260, 0, 740, 680);
 		this.setLayout(null);
 		this.setBackground(Color.YELLOW);
+		
+		layeredPane = new JLayeredPane();
+		layeredPane.setBounds(0, 0, 740, 680);
+		zaslona = new JPanel();
+		zaslona.setLayout(null);
+		zaslona.setBounds(0, 0, 740, 680);
+		zaslona.setBackground(Color.BLACK);
+		zaslona.setVisible(false);
 		
 		tytul = new JLabel("PRODUKTY");
 		tytul.setFont(new Font("TimesRoman", Font.BOLD, 30));
@@ -38,7 +64,8 @@ public class PanelProduktow extends JPanel{
 				{"1", "Budyń czekoladowy, paczka 100 szt.", 145505.43, "PLN", "SZT"}
 				};
 		
-		lista = new TabelaProduktow(data, TabelaProduktow.getNazwyKolumn());
+		modelListyProduktow = new DefaultTableModel(TabelaProduktow.getNazwyKolumn(), 0);
+		lista = new TabelaProduktow(modelListyProduktow);
 		listaScroll = new JScrollPane(lista);
 		listaScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		listaScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -68,14 +95,126 @@ public class PanelProduktow extends JPanel{
 		panelPodListeFaktur.add(listaFakturScroll, BorderLayout.CENTER);
 		panelPodListeFaktur.setBounds(30, 400, 680, 250);
 		
-		nowyWystawca = new JButton("NOWY PRODUKT");
-		nowyWystawca.setBounds(520, 70, 180, 30);
-				
-		this.add(tytul);
-		this.add(panelPodListe);
-		this.add(fakturyLab);
-		this.add(panelPodListeFaktur);
-		this.add(nowyWystawca);
+		nowyProdukt = new JButton("NOWY PRODUKT");
+		nowyProdukt.setBounds(520, 70, 180, 30);
+		
+		// ------- panel dodawania
+		ramkaDodawania = new RamkaDodawaniaProduktow("Dodawanie Nowego Produktu");
+		
+		// ------- Listenery
+		nowyProdukt.addActionListener(l -> {
+			ramkaDodawania.setVisible(true);
+			zaslona.setVisible(true);
+			
+		});
+		
+		this.add(layeredPane);
+		layeredPane.add(tytul, JLayeredPane.DEFAULT_LAYER);
+		layeredPane.add(panelPodListe, JLayeredPane.DEFAULT_LAYER);
+		layeredPane.add(fakturyLab, JLayeredPane.DEFAULT_LAYER);
+		layeredPane.add(panelPodListeFaktur, JLayeredPane.DEFAULT_LAYER);
+		layeredPane.add(nowyProdukt, JLayeredPane.DEFAULT_LAYER);
+		layeredPane.add(zaslona, JLayeredPane.PALETTE_LAYER);
+		layeredPane.add(ramkaDodawania, JLayeredPane.MODAL_LAYER);
 	}
+	
+	public void odswiezListy() {
+		// ---------------------------- TESTOWE
+		int i = 0;
+		for (Produkt p : Historia.getProdukty()) {
+			Object[] element = null;
+			element[0] = i + 1;
+			element[1] = p.getNazwa();
+			element[2] = p.getCenaNetto();
+			element[3] = Ustawienia.getWaluta();
+			element[4] = p.getJednostka();
+			modelListyProduktow.addRow(element);
+			i++;
+		}
+	}
+	
+	private class RamkaDodawaniaProduktow extends JInternalFrame {
 
+		private JPanel panelDodawania;
+		private JLabel nazwaLab;
+		private JLabel cenaLab;
+		private JLabel jednostkaLab;
+		private JTextField nazwaTxt;
+		private JFormattedTextField cenaTxt;
+		private JComboBox<String> jednostkaCB;
+		private JButton dodaj;
+		private JButton anuluj;
+
+		public RamkaDodawaniaProduktow(String nazwa) {
+			super(nazwa, false, false, false, false);
+			this.setBounds(120, 90, 425, 250);
+
+			panelDodawania = new JPanel();
+			panelDodawania.setLayout(null);
+			panelDodawania.setBounds(0, 0, 425, 250);
+
+			nazwaLab = new JLabel("Nazwa");
+			nazwaLab.setFont(new Font("TimesRoman", Font.BOLD, 20));
+			nazwaLab.setBounds(15, 15, 150, 30);
+			cenaLab = new JLabel("Cena Netto");
+			cenaLab.setFont(nazwaLab.getFont());
+			cenaLab.setBounds(15, 60, 150, 30);
+			jednostkaLab = new JLabel("Jednostka");
+			jednostkaLab.setFont(nazwaLab.getFont());
+			jednostkaLab.setBounds(15, 105, 150, 30);
+
+			nazwaTxt = new JTextField();
+			nazwaTxt.setFont(new Font("TimesRoman", Font.ITALIC, 15));
+			nazwaTxt.setHorizontalAlignment(JTextField.CENTER);
+			nazwaTxt.setBounds(200, 15, 200, 30);
+			cenaTxt = new JFormattedTextField();
+			cenaTxt.setFont(nazwaTxt.getFont());
+			cenaTxt.setBounds(200, 60, 200, 30);
+			cenaTxt.setHorizontalAlignment(JTextField.CENTER);
+			cenaTxt.setFormatterFactory(new AbstractFormatterFactory() {
+	            @Override
+	            public AbstractFormatter getFormatter(JFormattedTextField tf) {
+	                NumberFormat format = DecimalFormat.getInstance();
+	                format.setMinimumFractionDigits(2);
+	                format.setMaximumFractionDigits(2);
+	                format.setRoundingMode(RoundingMode.HALF_UP);
+	                InternationalFormatter formatter = new InternationalFormatter(format);
+	                formatter.setAllowsInvalid(false);
+	                formatter.setMinimum(0.0);
+	                formatter.setMaximum(1000000.00);
+	                return formatter;
+	            }});
+			cenaTxt.setText(Float.toString(0.00f));
+			jednostkaCB = new JComboBox<String>(Produkt.getListaJednostek());
+			jednostkaCB.setFont(nazwaTxt.getFont());
+			jednostkaCB.setBounds(200, 105, 200, 30);
+			jednostkaCB.setSelectedIndex(0);
+			dodaj = new JButton("DODAJ");
+			dodaj.setBounds(300, 170, 100, 30);
+			anuluj = new JButton("ANULUJ");
+			anuluj.setBounds(15, 170, 100, 30);
+
+			panelDodawania.add(nazwaLab);
+			panelDodawania.add(cenaLab);
+			panelDodawania.add(jednostkaLab);
+			panelDodawania.add(nazwaTxt);
+			panelDodawania.add(cenaTxt);
+			panelDodawania.add(jednostkaCB);
+			panelDodawania.add(dodaj);
+			panelDodawania.add(anuluj);
+
+			// ------- Listenery
+			anuluj.addActionListener(l -> {
+				this.setVisible(false);
+				zaslona.setVisible(false);
+				nazwaTxt.setText("");
+				cenaTxt.setText("0.00");
+				jednostkaCB.setSelectedIndex(0);
+			});
+
+			this.add(panelDodawania);
+			this.setVisible(false);
+		}
+
+	}
 }

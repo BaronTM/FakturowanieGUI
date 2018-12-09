@@ -3,6 +3,7 @@ package Fakturowanie;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Rectangle;
 import java.beans.PropertyVetoException;
 import java.text.ParseException;
 
@@ -27,14 +28,24 @@ public class PanelKlientow extends JPanel {
 	private JScrollPane listaFakturScroll;
 	private JPanel panelPodListe;
 	private JPanel panelPodListeFaktur;
+	private JPanel zaslona;
 	private JButton nowyKlient;
 	private RamkaDodawaniaKlienta ramkaDodawania;
+	private JLayeredPane layeredPane;
 
 	public PanelKlientow() {
 		super();
 		this.setBounds(260, 0, 740, 680);
 		this.setLayout(null);
 		this.setBackground(Color.LIGHT_GRAY);
+
+		layeredPane = new JLayeredPane();
+		layeredPane.setBounds(0, 0, 740, 680);
+		zaslona = new JPanel();
+		zaslona.setLayout(null);
+		zaslona.setBounds(0, 0, 740, 680);
+		zaslona.setBackground(Color.BLACK);
+		zaslona.setVisible(false);
 
 		tytul = new JLabel("KLIENCI");
 		tytul.setFont(new Font("TimesRoman", Font.BOLD, 30));
@@ -80,17 +91,22 @@ public class PanelKlientow extends JPanel {
 		// ------- Listenery
 		nowyKlient.addActionListener(l -> {
 			ramkaDodawania.setVisible(true);
+			zaslona.setVisible(true);
+			
 		});
+		
+		this.add(layeredPane);
+		layeredPane.add(tytul, JLayeredPane.DEFAULT_LAYER);
+		layeredPane.add(panelPodListe, JLayeredPane.DEFAULT_LAYER);
+		layeredPane.add(fakturyLab, JLayeredPane.DEFAULT_LAYER);
+		layeredPane.add(panelPodListeFaktur, JLayeredPane.DEFAULT_LAYER);
+		layeredPane.add(nowyKlient, JLayeredPane.DEFAULT_LAYER);
+		layeredPane.add(zaslona, JLayeredPane.PALETTE_LAYER);
+		layeredPane.add(ramkaDodawania, JLayeredPane.MODAL_LAYER);
 
-		this.add(tytul);
-		this.add(panelPodListe);
-		this.add(fakturyLab);
-		this.add(panelPodListeFaktur);
-		this.add(nowyKlient);
-		this.add(ramkaDodawania, 0);
 	}
 	
-	class RamkaDodawaniaKlienta extends JInternalFrame {
+	private class RamkaDodawaniaKlienta extends JInternalFrame {
 
 		private JPanel panelDodawania;
 		private JLabel imieLab;
@@ -112,7 +128,7 @@ public class PanelKlientow extends JPanel {
 
 			panelDodawania = new JPanel();
 			panelDodawania.setLayout(null);
-			panelDodawania.setBounds(0, 0, 500, 500);
+			panelDodawania.setBounds(0, 0, 425, 375);
 
 			imieLab = new JLabel("Imie");
 			imieLab.setFont(new Font("TimesRoman", Font.BOLD, 20));
@@ -177,6 +193,7 @@ public class PanelKlientow extends JPanel {
 			// ------- Listenery
 			anuluj.addActionListener(l -> {
 				this.setVisible(false);
+				zaslona.setVisible(false);
 				imieTxt.setText("");
 				nazwiskoTxt.setText("");
 				nazwaFirmyTxt.setText("");

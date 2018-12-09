@@ -1,8 +1,15 @@
 package Fakturowanie;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Date;
 
-public class Ustawienia {
+public class Ustawienia implements Serializable{
 	
 	
 	// dodac wszystko do konstruktora
@@ -22,7 +29,7 @@ public class Ustawienia {
 	private static int trybLimitu = 1;
 	private static int sprawdzajSumujac = 1;
 	private static Date dataLimitu = new Date(2018, 11, 7);
-	
+    private static final long serialVersionUID = 1755895988989489489L;
 
 	
 	private Ustawienia() {}
@@ -104,11 +111,36 @@ public class Ustawienia {
 	}
 	
 	public static void zapiszUstawienia() {
-		//-----------------------------------------------------------
+		try {
+			FileOutputStream fos = new FileOutputStream("ustawienia.ser");
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			oos.writeObject(ustawienia);
+			oos.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
 	}
 	
 	public static void wczytajUstawienia() {
-		//-----------------------------------------------------------
+		try {
+			FileInputStream fis = new FileInputStream("ustawienia.ser");
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			ustawienia = (Ustawienia) ois.readObject();
+			ois.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public static String getIndexFaktury() {
@@ -117,6 +149,4 @@ public class Ustawienia {
 		return nrFaktury;
 	}
 	
-	
-
 }

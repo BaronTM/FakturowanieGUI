@@ -56,7 +56,7 @@ public class PanelLimit extends JPanel{
 	private JButton zastosuj;
 	private TabelaFaktur listaFaktur;
 	private JScrollPane listaFakturScroll;
-	private JComboBox limitNetBrut;
+	private JComboBox<String> limitNetBrut;
 	
 	public PanelLimit () {
 		super();

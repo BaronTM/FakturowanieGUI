@@ -7,6 +7,7 @@ import java.awt.Font;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -16,25 +17,27 @@ import javax.swing.SwingConstants;
 public class PanelNowejFaktury extends JPanel{
 	
 	private JLabel tytul;
-	private JTextArea etykietaWystawcy;
-	private JTextArea etykietaKlienta;
-	private JPanel panelPodEtykiety;
-	private JPanel panelWystawcy;
-	private JPanel panelKlienta;	
-	private Font czcionkaEtykiet;
-	private TabelaZakupow lista;
-	private JScrollPane listaScroll;
-	private JPanel panelPodListe;
-	private JButton dodajProdukt;
 	private JLabel klientLab;
 	private JLabel wystawcaLab;
+	private JLabel formaPlatnosciLab;
+	private JTextArea etykietaWystawcy;
+	private JTextArea etykietaKlienta;
+	private JTextArea kwota;
+	private JButton dodajProdukt;
+	private JButton zapiszFakture;
+	private JButton zamknijFakture;
+	private JPanel panelPodEtykiety;
+	private JPanel panelWystawcy;
+	private JPanel panelKlienta;
 	private JPanel panelKwot;
 	private JPanel panelPodsumowania;
 	private JPanel panelPrzyciskowDolnych;
-	private JButton zapiszFakture;
-	private JButton zamknijFakture;
-	private JTextArea kwota;
+	private JPanel panelPodListe;
+	private JScrollPane listaScroll;
 	private JCheckBox uwzgledniona;
+	private JComboBox<String> formaPlatnosciCB;
+	private Font czcionkaEtykiet;
+	private TabelaZakupow lista;
 	
 	public PanelNowejFaktury() {
 		super();
@@ -120,7 +123,16 @@ public class PanelNowejFaktury extends JPanel{
 		panelPodListe = new JPanel();
 		panelPodListe.setLayout(new BorderLayout());
 		panelPodListe.add(listaScroll, BorderLayout.CENTER);
-		panelPodListe.setBounds(30, 250, 680, 300);
+		panelPodListe.setBounds(30, 250, 680, 250);
+		
+		formaPlatnosciLab = new JLabel("Forma Platnosci");
+		formaPlatnosciLab.setFont(klientLab.getFont());
+		formaPlatnosciLab.setBounds(430, 520, 130, 30);
+		
+		formaPlatnosciCB = new JComboBox<String>(Fakturka.getDostepneFormyPlatnosci());
+		formaPlatnosciCB.setFont(formaPlatnosciLab.getFont());
+		formaPlatnosciCB.setSelectedIndex(0);
+		formaPlatnosciCB.setBounds(560, 520, 130, 30);
 		
 		zapiszFakture = new JButton("Zapisz Fakture");
 		zapiszFakture.setFont(new Font("TimesRoman", Font.BOLD, 15));
@@ -146,6 +158,8 @@ public class PanelNowejFaktury extends JPanel{
 		this.add(dodajProdukt);
 		this.add(panelPodsumowania);
 		this.add(uwzgledniona);
+		this.add(formaPlatnosciCB);
+		this.add(formaPlatnosciLab);
 	}
 	
 	private void uzupelnijEtykieteWystawcy(Wystawca wystawca) {

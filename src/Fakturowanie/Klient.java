@@ -1,12 +1,15 @@
 package Fakturowanie;
 
-public class Klient {
+import java.io.Serializable;
+
+public class Klient implements Serializable{
 
 	private String imie;
 	private String nazwisko;
 	private String nazwaFirmy;
 	private long nip; // 10 cyfr
 	private String adres;
+    private static final long serialVersionUID = 1755895988989497341L;
 
 	public Klient(String imie, String nazwisko, String nazwaFirmy, long nip, String adres) {
 		this.imie = imie;
@@ -108,5 +111,19 @@ public class Klient {
 		}
 		
 		return tekst;
+	}
+	
+	public boolean equals(Object otherObject) {
+		if (this == otherObject) {
+			return true;
+		} else if (otherObject == null) {
+			return false;
+		} else if (getClass() != otherObject.getClass()) {
+			return false;
+		} else {
+			Klient other = (Klient) otherObject;
+			return (imie.equals(other.imie) && nazwisko.equals(other.nazwisko) && nazwaFirmy.equals(other.nazwaFirmy)
+					&& (Long.compare(nip, other.nip) == 0) && adres.equals(other.adres));
+		}
 	}
 }
