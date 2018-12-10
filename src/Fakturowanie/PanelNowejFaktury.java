@@ -5,6 +5,7 @@ import java.awt.Color;
 
 import java.awt.Font;
 import java.text.ParseException;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -22,8 +23,8 @@ import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.MaskFormatter;
 
-public class PanelNowejFaktury extends JPanel{
-	
+public class PanelNowejFaktury extends JPanel {
+
 	private JLabel tytul;
 	private JLabel klientLab;
 	private JLabel wystawcaLab;
@@ -52,13 +53,16 @@ public class PanelNowejFaktury extends JPanel{
 	private JPanel zaslona;
 	private RamkaDodawaniaKlienta ramkaDodawaniaKlienta;
 	private RamkaDodawaniaWystawcy ramkaDodawaniaWystawcy;
-	
+	private RamkaDodawaniaProduktu ramkaDodawaniaProduktu;
+	private DefaultTableModel modelListyZakupow;
+	private ArrayList<Pozycja> listaZakupow;
+
 	public PanelNowejFaktury() {
 		super();
 		this.setBounds(260, 0, 740, 680);
 		this.setLayout(null);
 		this.setBackground(Color.YELLOW);
-		
+
 		layeredPane = new JLayeredPane();
 		layeredPane.setBounds(0, 0, 740, 680);
 		zaslona = new JPanel();
@@ -67,75 +71,65 @@ public class PanelNowejFaktury extends JPanel{
 		zaslona.setBackground(Color.BLACK);
 		zaslona.setVisible(false);
 		
+		listaZakupow = new ArrayList<>();
+
 		tytul = new JLabel("NOWA FAKTURA");
 		tytul.setFont(new Font("TimesRoman", Font.BOLD, 30));
 		tytul.setBounds(120, 20, 500, 40);
 		tytul.setHorizontalAlignment(SwingConstants.CENTER);
-		
+
 		czcionkaEtykiet = new Font("TimesRoman", Font.CENTER_BASELINE, 15);
-		
+
 		klientLab = new JLabel("KLIENT");
 		klientLab.setFont(new Font("TimesRoman", Font.BOLD, 15));
 		klientLab.setHorizontalAlignment(SwingConstants.CENTER);
-		
+
 		wystawcaLab = new JLabel("WYSTAWCA");
 		wystawcaLab.setFont(new Font("TimesRoman", Font.BOLD, 15));
 		wystawcaLab.setHorizontalAlignment(SwingConstants.CENTER);
-		
+
 		etykietaWystawcy = new JTextArea();
 		etykietaWystawcy.setFont(czcionkaEtykiet);
 		etykietaWystawcy.setEditable(false);
-		
+
 		etykietaKlienta = new JTextArea();
 		etykietaKlienta.setFont(czcionkaEtykiet);
 		etykietaKlienta.setEditable(false);
-		
+
 		panelWystawcy = new JPanel();
 		panelWystawcy.setLayout(new BorderLayout());
 		panelWystawcy.add(wystawcaLab, BorderLayout.CENTER);
 		panelWystawcy.add(etykietaWystawcy, BorderLayout.SOUTH);
-		
+
 		panelKlienta = new JPanel();
 		panelKlienta.setLayout(new BorderLayout());
 		panelKlienta.add(klientLab, BorderLayout.CENTER);
 		panelKlienta.add(etykietaKlienta, BorderLayout.SOUTH);
-		
+
 		panelPodEtykiety = new JPanel();
 		panelPodEtykiety.setLayout(new BorderLayout());
 		panelPodEtykiety.setBounds(40, 70, 660, 130);
 		panelPodEtykiety.add(panelKlienta, BorderLayout.WEST);
 		panelPodEtykiety.add(panelWystawcy, BorderLayout.EAST);
-		
+
 		dodajProdukt = new JButton("Dodaj produkt");
 		dodajProdukt.setFont(new Font("TimesRoman", Font.BOLD, 15));
 		dodajProdukt.setBounds(510, 260, 180, 30);
-		
+
 		wybierzKlienta = new JButton("Wybierz Klienta");
 		wybierzKlienta.setFont(dodajProdukt.getFont());
 		wybierzKlienta.setBounds(40, 210, 200, 30);
-		
+
 		wybierzWystawce = new JButton("Wybierz Wystawcę");
 		wybierzWystawce.setFont(dodajProdukt.getFont());
 		wybierzWystawce.setBounds(500, 210, 200, 30);
-		
+
 		uwzgledniona = new JCheckBox("Faktura uwzględniona w limicie");
 		uwzgledniona.setFont(dodajProdukt.getFont());
 		uwzgledniona.setBounds(50, 260, 300, 30);
-			
-		//----------------------- TESTOWE
-		Wystawca wystawca = new Wystawca("Janusz", "Romanowski", "MojaFirma", 7174563234l, "ul. Srebrna 485, 36-741 Lublin");
-		this.uzupelnijEtykieteWystawcy(wystawca);
-		
-		//----------------------- TESTOWE
-		Klient klient = new Klient("Adam", "Kowalski", "JegoFirma", 5153367876l, "Złota 1c, 01-456 Warszawa");
-		this.uzupelnijEtykieteKlienta(klient);
-		
-		//----------------------- TESTOWE
-		Object[][] data = {
-				{"1", "Kisiel paczka 100", 39.99, 1, "szt", 23, "30%", 
-					39.99, 39.99*1.23, "Usun"}
-				};
-		lista = new TabelaZakupow(data, TabelaZakupow.getNazwyKolumn());
+
+		modelListyZakupow = new DefaultTableModel(TabelaZakupow.getNazwyKolumn(), 0);
+		lista = new TabelaZakupow(modelListyZakupow);
 		listaScroll = new JScrollPane(lista);
 		listaScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		listaScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -144,55 +138,64 @@ public class PanelNowejFaktury extends JPanel{
 		kwota.setFont(new Font("TimesRoman", Font.BOLD, 15));
 		kwota.setEditable(false);
 		kwota.setText("Łączna kwonta netto: " + "\n" + "Łączna kwonta brutto: ");
-		
+
 		panelKwot = new JPanel();
 		panelKwot.setLayout(new BorderLayout());
 		panelKwot.add(kwota, BorderLayout.NORTH);
-		
+
 		panelPodListe = new JPanel();
 		panelPodListe.setLayout(new BorderLayout());
 		panelPodListe.add(listaScroll, BorderLayout.CENTER);
 		panelPodListe.setBounds(30, 300, 680, 200);
-		
+
 		formaPlatnosciLab = new JLabel("Forma Platnosci");
 		formaPlatnosciLab.setFont(klientLab.getFont());
 		formaPlatnosciLab.setBounds(420, 520, 150, 30);
-		
+
 		formaPlatnosciCB = new JComboBox<String>(Fakturka.getDostepneFormyPlatnosci());
 		formaPlatnosciCB.setFont(formaPlatnosciLab.getFont());
 		formaPlatnosciCB.setSelectedIndex(0);
 		formaPlatnosciCB.setBounds(560, 520, 130, 30);
-		
+
 		zapiszFakture = new JButton("Zapisz Fakture");
 		zapiszFakture.setFont(new Font("TimesRoman", Font.BOLD, 15));
 		zapiszFakture.setSize(180, 30);
 		zamknijFakture = new JButton("Zamknij Fakture");
 		zamknijFakture.setFont(new Font("TimesRoman", Font.BOLD, 15));
 		zamknijFakture.setSize(180, 30);
-		
+
 		panelPrzyciskowDolnych = new JPanel();
 		panelPrzyciskowDolnych.setLayout(new BorderLayout());
 		panelPrzyciskowDolnych.add(zapiszFakture, BorderLayout.NORTH);
 		panelPrzyciskowDolnych.add(zamknijFakture, BorderLayout.SOUTH);
-		
+
 		panelPodsumowania = new JPanel();
 		panelPodsumowania.setLayout(new BorderLayout());
 		panelPodsumowania.add(panelKwot, BorderLayout.EAST);
 		panelPodsumowania.add(panelPrzyciskowDolnych, BorderLayout.WEST);
 		panelPodsumowania.setBounds(30, 570, 680, 70);
-		
+
 		ramkaDodawaniaKlienta = new RamkaDodawaniaKlienta("Dodawanie Klienta");
 		ramkaDodawaniaWystawcy = new RamkaDodawaniaWystawcy("Dodawanie Wystawcy");
+		ramkaDodawaniaProduktu = new RamkaDodawaniaProduktu("Dodawanie Produktu");
+
 		// ------- Listenery
 		wybierzKlienta.addActionListener(l -> {
 			ramkaDodawaniaKlienta.setVisible(true);
+			ramkaDodawaniaKlienta.odswiezListy();
 			zaslona.setVisible(true);
 		});
 		wybierzWystawce.addActionListener(l -> {
 			ramkaDodawaniaWystawcy.setVisible(true);
+			ramkaDodawaniaWystawcy.odswiezListy();
 			zaslona.setVisible(true);
 		});
-		
+		dodajProdukt.addActionListener(l -> {
+			ramkaDodawaniaProduktu.setVisible(true);
+			ramkaDodawaniaProduktu.odswiezListy();
+			zaslona.setVisible(true);
+		});
+
 		this.add(layeredPane);
 		layeredPane.add(tytul, JLayeredPane.DEFAULT_LAYER);
 		layeredPane.add(panelPodEtykiety, JLayeredPane.DEFAULT_LAYER);
@@ -207,14 +210,38 @@ public class PanelNowejFaktury extends JPanel{
 		layeredPane.add(zaslona, JLayeredPane.PALETTE_LAYER);
 		layeredPane.add(ramkaDodawaniaKlienta, JLayeredPane.MODAL_LAYER);
 		layeredPane.add(ramkaDodawaniaWystawcy, JLayeredPane.MODAL_LAYER);
+		layeredPane.add(ramkaDodawaniaProduktu, JLayeredPane.MODAL_LAYER);
 	}
-	
+
 	private void uzupelnijEtykieteWystawcy(Wystawca wystawca) {
 		etykietaWystawcy.setText(wystawca.toString());
 	}
-	
+
 	private void uzupelnijEtykieteKlienta(Klient klient) {
 		etykietaKlienta.setText(klient.toString());
+	}
+	
+	public void odswiezListeZakupow() {
+		for (int k = modelListyZakupow.getRowCount(); k > 0; k--) {
+			modelListyZakupow.removeRow(0);
+		}
+		int i = 0;
+		for (Pozycja p : listaZakupow) {
+			p.oblicz();
+			Object[] element = new Object[10];
+			element[0] = i + 1;
+			element[1] = p.getProdukt().getNazwa();
+			element[2] = p.getProdukt().getCenaNetto();
+			element[3] = p.getIlosc();
+			element[4] = p.getProdukt().getJednostka();
+			element[5] = String.format("%.0f%%", p.getVatPoz() * 100);
+			element[6] = String.format("%.0f%%", p.getZnizka() * 100);
+			element[7] = p.getKwotaNettoPoz();
+			element[8] = p.getKwotaBruttoPoz();
+			element[9] = "UUU";
+			modelListyZakupow.addRow(element);
+			i++;
+		}
 	}
 
 	private class RamkaDodawaniaKlienta extends JInternalFrame {
@@ -223,20 +250,20 @@ public class PanelNowejFaktury extends JPanel{
 		private JPanel panelPodListeKlientow;
 		private DefaultTableModel modelListyKlientow;
 		private JScrollPane listaScrollKlientow;
-		private TabelaKlientow listaKlientow;
+		private TabelaKlientowFakturka listaKlientow;
 		private JButton dodaj;
 		private JButton anuluj;
 
 		public RamkaDodawaniaKlienta(String nazwa) {
 			super(nazwa, false, false, false, false);
-			this.setBounds(28, 152, 684, 375);
+			this.setBounds(25, 152, 680, 375);
 
 			panelDodawaniaKlienta = new JPanel();
 			panelDodawaniaKlienta.setLayout(null);
 			panelDodawaniaKlienta.setBounds(0, 0, 680, 375);
-			
-			modelListyKlientow = new DefaultTableModel(TabelaKlientow.getNazwyKolumn(), 0);
-			listaKlientow = new TabelaKlientow(modelListyKlientow);
+
+			modelListyKlientow = new DefaultTableModel(TabelaKlientowFakturka.getNazwyKolumn(), 0);
+			listaKlientow = new TabelaKlientowFakturka(modelListyKlientow);
 			listaScrollKlientow = new JScrollPane(listaKlientow);
 			listaScrollKlientow.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 			listaScrollKlientow.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -250,42 +277,75 @@ public class PanelNowejFaktury extends JPanel{
 			dodaj.setBounds(560, 300, 100, 30);
 			anuluj = new JButton("ANULUJ");
 			anuluj.setBounds(15, 300, 100, 30);
-			
+
 			panelDodawaniaKlienta.add(panelPodListeKlientow);
 			panelDodawaniaKlienta.add(dodaj);
 			panelDodawaniaKlienta.add(anuluj);
-			
+
 			// ------- Listenery
 			anuluj.addActionListener(l -> {
 				this.setVisible(false);
 				zaslona.setVisible(false);
 			});
+			dodaj.addActionListener(l -> {
+				int sel = listaKlientow.getSelectedRow();
+				if (sel == -1) {
+					JOptionPane.showMessageDialog(this, "Nie wybrano klienta.", "Błąd", JOptionPane.ERROR_MESSAGE);
+				} else {
+					for (Klient k : Statyczne.getHistoria().getKlienci()) {
+						if (k.nipToString().equals(listaKlientow.getValueAt(sel, 4).toString())) {
+							uzupelnijEtykieteKlienta(k);
+							this.setVisible(false);
+							zaslona.setVisible(false);
+							break;
+						}
+					}
+				}
+			});
 
 			this.add(panelDodawaniaKlienta);
 			this.setVisible(false);
 		}
+
+		public void odswiezListy() {
+			for (int k = modelListyKlientow.getRowCount(); k > 0; k--) {
+				modelListyKlientow.removeRow(0);
+			}
+			int i = 0;
+			for (Klient p : Statyczne.getHistoria().getKlienci()) {
+				Object[] element = new Object[6];
+				element[0] = i + 1;
+				element[1] = p.getNazwaFirmy();
+				element[2] = p.getImie();
+				element[3] = p.getNazwisko();
+				element[4] = p.nipToString();
+				element[5] = p.getAdres();
+				modelListyKlientow.addRow(element);
+				i++;
+			}
+		}
 	}
-	
+
 	private class RamkaDodawaniaWystawcy extends JInternalFrame {
 
 		private JPanel panelDodawaniaWystawcy;
 		private JPanel panelPodListeWystawcow;
 		private DefaultTableModel modelListyWystawcow;
 		private JScrollPane listaScrollWystawcow;
-		private TabelaKlientow listaWystawcow;
+		private TabelaWystawcowFakturka listaWystawcow;
 		private JButton dodaj;
 		private JButton anuluj;
 
 		public RamkaDodawaniaWystawcy(String nazwa) {
 			super(nazwa, false, false, false, false);
-			this.setBounds(28, 152, 684, 375);
+			this.setBounds(25, 152, 680, 375);
 
 			panelDodawaniaWystawcy = new JPanel();
 			panelDodawaniaWystawcy.setLayout(null);
 			panelDodawaniaWystawcy.setBounds(0, 0, 680, 375);
-			
-			modelListyWystawcow = new DefaultTableModel(TabelaWystawcow.getNazwyKolumn(), 0);
-			listaWystawcow = new TabelaKlientow(modelListyWystawcow);
+
+			modelListyWystawcow = new DefaultTableModel(TabelaWystawcowFakturka.getNazwyKolumn(), 0);
+			listaWystawcow = new TabelaWystawcowFakturka(modelListyWystawcow);
 			listaScrollWystawcow = new JScrollPane(listaWystawcow);
 			listaScrollWystawcow.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 			listaScrollWystawcow.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -299,19 +359,143 @@ public class PanelNowejFaktury extends JPanel{
 			dodaj.setBounds(560, 300, 100, 30);
 			anuluj = new JButton("ANULUJ");
 			anuluj.setBounds(15, 300, 100, 30);
-			
+
 			panelDodawaniaWystawcy.add(panelPodListeWystawcow);
 			panelDodawaniaWystawcy.add(dodaj);
 			panelDodawaniaWystawcy.add(anuluj);
-			
+
 			// ------- Listenery
 			anuluj.addActionListener(l -> {
 				this.setVisible(false);
 				zaslona.setVisible(false);
 			});
+			dodaj.addActionListener(l -> {
+				int sel = listaWystawcow.getSelectedRow();
+				if (sel == -1) {
+					JOptionPane.showMessageDialog(this, "Nie wybrano wystawcy.", "Błąd", JOptionPane.ERROR_MESSAGE);
+				} else {
+					for (Wystawca k : Statyczne.getHistoria().getWystrawcy()) {
+						if (k.nipToString().equals(listaWystawcow.getValueAt(sel, 4).toString())) {
+							uzupelnijEtykieteWystawcy(k);
+							this.setVisible(false);
+							zaslona.setVisible(false);
+							break;
+						}
+					}
+				}
+			});
 
 			this.add(panelDodawaniaWystawcy);
 			this.setVisible(false);
+		}
+
+		public void odswiezListy() {
+			for (int k = modelListyWystawcow.getRowCount(); k > 0; k--) {
+				modelListyWystawcow.removeRow(0);
+			}
+			int i = 0;
+			for (Wystawca p : Statyczne.getHistoria().getWystrawcy()) {
+				Object[] element = new Object[6];
+				element[0] = i + 1;
+				element[1] = p.getNazwaFirmy();
+				element[2] = p.getImie();
+				element[3] = p.getNazwisko();
+				element[4] = p.nipToString();
+				element[5] = p.getAdres();
+				modelListyWystawcow.addRow(element);
+				i++;
+			}
+		}
+	}
+
+	private class RamkaDodawaniaProduktu extends JInternalFrame {
+
+		private JPanel panelDodawaniaProduktow;
+		private JPanel panelPodListeProduktow;
+		private DefaultTableModel modelListyProduktow;
+		private JScrollPane listaScrollProduktow;
+		private TabelaProduktow listaProduktow;
+		private JButton dodaj;
+		private JButton anuluj;
+
+		public RamkaDodawaniaProduktu(String nazwa) {
+			super(nazwa, false, false, false, false);
+			this.setBounds(130, 152, 480, 375);
+
+			panelDodawaniaProduktow = new JPanel();
+			panelDodawaniaProduktow.setLayout(null);
+			panelDodawaniaProduktow.setBounds(0, 0, 480, 375);
+
+			modelListyProduktow = new DefaultTableModel(TabelaProduktow.getNazwyKolumn(), 0);
+			listaProduktow = new TabelaProduktow(modelListyProduktow);
+			listaScrollProduktow = new JScrollPane(listaProduktow);
+			listaScrollProduktow.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+			listaScrollProduktow.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+			panelPodListeProduktow = new JPanel();
+			panelPodListeProduktow.setLayout(new BorderLayout());
+			panelPodListeProduktow.add(listaScrollProduktow, BorderLayout.CENTER);
+			panelPodListeProduktow.setBounds(0, 0, 470, 280);
+
+			dodaj = new JButton("DODAJ");
+			dodaj.setBounds(350, 300, 100, 30);
+			anuluj = new JButton("ANULUJ");
+			anuluj.setBounds(15, 300, 100, 30);
+
+			panelDodawaniaProduktow.add(panelPodListeProduktow);
+			panelDodawaniaProduktow.add(dodaj);
+			panelDodawaniaProduktow.add(anuluj);
+
+			// ------- Listenery
+			anuluj.addActionListener(l -> {
+				this.setVisible(false);
+				zaslona.setVisible(false);
+			});
+			dodaj.addActionListener(l -> {
+				int sel = listaProduktow.getSelectedRow();
+				if (sel == -1) {
+					JOptionPane.showMessageDialog(this, "Nie wybrano produktu.", "Błąd", JOptionPane.ERROR_MESSAGE);
+				} else {
+					boolean zawiera = false;
+					for (int i = 0; i < modelListyZakupow.getRowCount(); i++) {
+						if (modelListyZakupow.getValueAt(i, 1).toString()
+								.equals(listaProduktow.getValueAt(sel, 1).toString())) {
+							zawiera = true;
+						}
+					}
+					if (zawiera) {
+						JOptionPane.showMessageDialog(this, "Ten produkt został już dodany.", "Błąd", JOptionPane.ERROR_MESSAGE);
+					} else {
+						for (Produkt p : Statyczne.getHistoria().getProdukty()) {
+							if (p.getNazwa().equals(listaProduktow.getValueAt(sel, 1).toString())) {
+								listaZakupow.add(new Pozycja(p));
+								odswiezListeZakupow();
+								break;
+							}
+						}
+					}
+				}
+			});
+
+			this.add(panelDodawaniaProduktow);
+			this.setVisible(false);
+		}
+
+		public void odswiezListy() {
+			for (int k = modelListyProduktow.getRowCount(); k > 0; k--) {
+				modelListyProduktow.removeRow(0);
+			}
+			int i = 0;
+			for (Produkt p : Statyczne.getHistoria().getProdukty()) {
+				Object[] element = new Object[5];
+				element[0] = i + 1;
+				element[1] = p.getNazwa();
+				element[2] = p.getCenaNetto();
+				element[3] = Statyczne.getUstawienia().getWaluta();
+				element[4] = p.getJednostka();
+				modelListyProduktow.addRow(element);
+				i++;
+			}
 		}
 	}
 }

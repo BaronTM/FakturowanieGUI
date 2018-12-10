@@ -40,7 +40,6 @@ public class TabelaWystawcow extends JTable{
 		this.setParameters();
 	}
 
-
 	public static String[] getNazwyKolumn() {
 		return nazwyKolumn;
 	}
