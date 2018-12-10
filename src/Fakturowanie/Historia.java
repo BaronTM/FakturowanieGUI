@@ -11,40 +11,40 @@ import java.util.ArrayList;
 
 public class Historia implements Serializable{
 
-	private static ArrayList<Fakturka> faktury = new ArrayList<>();
-	private static ArrayList<Klient> klienci = new ArrayList<>();
-	private static ArrayList<Wystawca> wystawcy = new ArrayList<>();
-	private static ArrayList<Produkt> produkty = new ArrayList<>();
-	private static Historia historia = new Historia();
+	private ArrayList<Fakturka> faktury = new ArrayList<>();
+	private ArrayList<Klient> klienci = new ArrayList<>();
+	private ArrayList<Wystawca> wystawcy = new ArrayList<>();
+	private ArrayList<Produkt> produkty = new ArrayList<>();
     private static final long serialVersionUID = 1755895988989489999L;
 	
-	private Historia() {}
-	
-	public static Historia getHistoria() {
-		return historia;
+	public Historia() {
+		faktury = new ArrayList<>();
+		klienci = new ArrayList<>();
+		wystawcy = new ArrayList<>();
+		produkty = new ArrayList<>();
 	}
-	
-	public static ArrayList<Fakturka> getFaktury() {
+		
+	public ArrayList<Fakturka> getFaktury() {
 		return faktury;
 	}
 	
-	public static ArrayList<Klient> getKlienci() {
+	public ArrayList<Klient> getKlienci() {
 		return klienci;
 	}
 	
-	public static ArrayList<Wystawca> getWystrawcy() {
+	public ArrayList<Wystawca> getWystrawcy() {
 		return wystawcy;
 	}
 	
-	public static ArrayList<Produkt> getProdukty() {
+	public ArrayList<Produkt> getProdukty() {
 		return produkty;
 	}
 	
-	public static void zapiszHistorie() {
+	public void zapiszHistorie() {
 		try {
 			FileOutputStream fos = new FileOutputStream("historia.ser");
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
-			oos.writeObject(historia);
+			oos.writeObject(this);
 			oos.close();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -53,23 +53,5 @@ public class Historia implements Serializable{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}		
-	}
-	
-	public static void wczytajHistorie() {
-		try {
-			FileInputStream fis = new FileInputStream("historia.ser");
-			ObjectInputStream ois = new ObjectInputStream(fis);
-			historia = (Historia) ois.readObject();
-			ois.close();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 }

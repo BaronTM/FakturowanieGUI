@@ -102,7 +102,6 @@ public class PanelProduktow extends JPanel{
 		nowyProdukt.addActionListener(l -> {
 			ramkaDodawania.setVisible(true);
 			zaslona.setVisible(true);
-			
 		});
 		
 		this.add(layeredPane);
@@ -120,7 +119,7 @@ public class PanelProduktow extends JPanel{
 			modelListyProduktow.removeRow(0);
 		}
 		int i = 0;
-		for (Produkt p : Historia.getProdukty()) {
+		for (Produkt p : Statyczne.getHistoria().getProdukty()) {
 			Object[] element = new Object[5];
 			element[0] = i + 1;
 			element[1] = p.getNazwa();
@@ -229,7 +228,7 @@ public class PanelProduktow extends JPanel{
 						    JOptionPane.ERROR_MESSAGE);
 				} else {
 					boolean istnieje = false;
-					for (Produkt p : Historia.getProdukty()) {
+					for (Produkt p : Statyczne.getHistoria().getProdukty()) {
 						if (p.getNazwa().equals(nazwaNowego)) {
 							istnieje = true;
 						}
@@ -240,12 +239,12 @@ public class PanelProduktow extends JPanel{
 							    "Błąd",
 							    JOptionPane.ERROR_MESSAGE);
 					} else {
-						Historia.getProdukty().add(new Produkt(nazwaNowego, cenaNowego, jednostkaNowego));
+						Statyczne.getHistoria().getProdukty().add(new Produkt(nazwaNowego, cenaNowego, jednostkaNowego));
 						nazwaTxt.setText("");
 						cenaTxt.setText("0.00");
 						jednostkaCB.setSelectedIndex(0);
 						odswiezListy();
-						Historia.zapiszHistorie();
+						Statyczne.getHistoria().zapiszHistorie();
 					}
 				}				
 			});

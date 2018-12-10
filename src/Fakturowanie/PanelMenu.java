@@ -88,6 +88,7 @@ public class PanelMenu extends JPanel {
 		butProdukty.addActionListener(l -> {
 			wylaczPanele();
 			Aplikacja.getPanelProduktow().setVisible(true);
+			Aplikacja.getPanelProduktow().odswiezListy();
 		});
 		butWystawcy.addActionListener(l -> {
 			wylaczPanele();

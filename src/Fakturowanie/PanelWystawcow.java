@@ -113,7 +113,7 @@ public class PanelWystawcow extends JPanel{
 			modelListyWystawcow.removeRow(0);
 		}
 		int i = 0;
-		for (Wystawca p : Historia.getWystrawcy()) {
+		for (Wystawca p : Statyczne.getHistoria().getWystrawcy()) {
 			Object[] element = new Object[7];
 			float sumaBr = 0;
 			float sumaNet = 0;
@@ -121,7 +121,7 @@ public class PanelWystawcow extends JPanel{
 			int iloscZamknietych = 0;
 			element[0] = i + 1;
 			element[1] = p.toString();
-			for (Fakturka f : Historia.getFaktury()) {
+			for (Fakturka f : Statyczne.getHistoria().getFaktury()) {
 				iloscFaktur++;
 				if (f.getKlient().equals(p)) {
 					sumaBr += f.getCenaKoncowaBrutto();
@@ -254,7 +254,7 @@ public class PanelWystawcow extends JPanel{
 								JOptionPane.ERROR_MESSAGE);
 					} else {
 						boolean istnieje = false;
-						for (Wystawca k : Historia.getWystrawcy()) {
+						for (Wystawca k : Statyczne.getHistoria().getWystrawcy()) {
 							if (Long.compare(k.getNip(), nip) == 0) {
 								istnieje = true;
 							}
@@ -263,14 +263,14 @@ public class PanelWystawcow extends JPanel{
 							JOptionPane.showMessageDialog(this, "Wystawca o takim NIPie juz istnieje.", "Błąd",
 									JOptionPane.ERROR_MESSAGE);
 						} else {
-							Historia.getWystrawcy().add(new Wystawca(imie, nazwisko, nazwaFirmy, nip, adres));
+							Statyczne.getHistoria().getWystrawcy().add(new Wystawca(imie, nazwisko, nazwaFirmy, nip, adres));
 							imieTxt.setText("");
 							nazwiskoTxt.setText("");
 							nazwaFirmyTxt.setText("");
 							nipTxt.setText("");
 							adresTxt.setText("");
 							odswiezListy();
-							Historia.zapiszHistorie();
+							Statyczne.getHistoria().zapiszHistorie();
 						}
 					}
 				}

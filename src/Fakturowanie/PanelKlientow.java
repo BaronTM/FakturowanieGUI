@@ -112,7 +112,7 @@ public class PanelKlientow extends JPanel {
 			modelListyKlientow.removeRow(0);
 		}
 		int i = 0;
-		for (Klient p : Historia.getKlienci()) {
+		for (Klient p : Statyczne.getHistoria().getKlienci()) {
 			Object[] element = new Object[7];
 			float sumaBr = 0;
 			float sumaNet = 0;
@@ -120,7 +120,7 @@ public class PanelKlientow extends JPanel {
 			int iloscZamknietych = 0;
 			element[0] = i + 1;
 			element[1] = p.toString();
-			for (Fakturka f : Historia.getFaktury()) {
+			for (Fakturka f : Statyczne.getHistoria().getFaktury()) {
 				iloscFaktur++;
 				if (f.getKlient().equals(p)) {
 					sumaBr += f.getCenaKoncowaBrutto();
@@ -252,7 +252,7 @@ public class PanelKlientow extends JPanel {
 								JOptionPane.ERROR_MESSAGE);
 					} else {
 						boolean istnieje = false;
-						for (Klient k : Historia.getKlienci()) {
+						for (Klient k : Statyczne.getHistoria().getKlienci()) {
 							if (Long.compare(k.getNip(), nip) == 0) {
 								istnieje = true;
 							}
@@ -261,14 +261,14 @@ public class PanelKlientow extends JPanel {
 							JOptionPane.showMessageDialog(this, "Klient o takim NIPie juz istnieje.", "Błąd",
 									JOptionPane.ERROR_MESSAGE);
 						} else {
-							Historia.getKlienci().add(new Klient(imie, nazwisko, nazwaFirmy, nip, adres));
+							Statyczne.getHistoria().getKlienci().add(new Klient(imie, nazwisko, nazwaFirmy, nip, adres));
 							imieTxt.setText("");
 							nazwiskoTxt.setText("");
 							nazwaFirmyTxt.setText("");
 							nipTxt.setText("");
 							adresTxt.setText("");
 							odswiezListy();
-							Historia.zapiszHistorie();
+							Statyczne.getHistoria().zapiszHistorie();
 						}
 					}
 				}
