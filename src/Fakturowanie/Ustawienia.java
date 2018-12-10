@@ -11,71 +11,92 @@ import java.util.Date;
 
 public class Ustawienia implements Serializable{
 	
-	
 	// dodac wszystko do konstruktora
-	private static float czynnikWaluty = 1;
-	private static String waluta = "PLN";
-	private static float vat = 0.23f;
-	private static int nrNastepnejFaktury = 1;
-	private static int rok = 2018;
-	private static Wystawca domyslnyWystawca;
-	private static Ustawienia ustawienia = new Ustawienia();
-	private static String[] walutyDoWyboru = {"PLN", "USD", "EUR", "GBP"};
+	private float czynnikWaluty;
+	private String waluta;
+	private float vat;
+	private int nrNastepnejFaktury;
+	private int rok;
+	private Wystawca domyslnyWystawca;
+	private String[] walutyDoWyboru = {"PLN", "USD", "EUR", "GBP"};
 	//------- Limity
-	private static String[] rodzajeLimitu = {"NETTO", "BRUTTO"};
-	private static float limit = 10000.00f;
-	private static String limitRodzaj = "BRUTTO";
-	private static boolean limitOn = false;
-	private static int trybLimitu = 1;
-	private static int sprawdzajSumujac = 1;
-	private static Date dataLimitu = new Date(2018, 11, 7);
+	private String[] rodzajeLimitu = {"NETTO", "BRUTTO"};
+	private float limit;
+	private String limitRodzaj;
+	private boolean limitOn;
+	private int trybLimitu;
+	private int sprawdzajSumujac;
+	private Date dataLimitu;
     private static final long serialVersionUID = 1755895988989489489L;
-
 	
-	private Ustawienia() {}
-	
-	public static Ustawienia getUstawienia() {
-		return ustawienia;
+	public Ustawienia() {
+		czynnikWaluty = 1;
+		waluta = "PLN";
+		vat = 0.23f;
+		nrNastepnejFaktury = 1;
+		rok = 2018;
+		limit = 10000.00f;
+		limitRodzaj = "BRUTTO";
+		limitOn = false;
+		trybLimitu = 1;
+		sprawdzajSumujac = 1;
+		dataLimitu = new Date(2018, 11, 7);
 	}
 	
-	public static float getCzynnikWaluty() {
+	public float getCzynnikWaluty() {
 		return czynnikWaluty;
 	}
 	
-	public static String getWaluta() {
+	public String getWaluta() {
 		return waluta;
 	}
 	
-	public static float getVat() {
+	public float getVat() {
 		return vat;
 	}
 	
-	public static int getNrNastepnejFaktury() {
+	public int getNrNastepnejFaktury() {
 		return nrNastepnejFaktury;
 	}
 	
-	public static int getRok() {
+	public int getRok() {
 		return rok;
 	}
 	
-	public static Wystawca getDomyslnyWystawca() {
+	public Wystawca getDomyslnyWystawca() {
 		return domyslnyWystawca;
 	}
 	
-	public static String[] getWalutyDoWyboru() {
+	public String[] getWalutyDoWyboru() {
 		return walutyDoWyboru;
 	}
 	
-	public static float getLimit() {
-		return limit;
-	}
-	
-	public static String[] getRodzajeLimitu() {
+	public String[] getRodzajeLimitu() {
 		return rodzajeLimitu;
 	}
 	
-	public static String getLimitRodzaj() {
+	public float getLimit() {
+		return limit;
+	}
+	
+	public String getLimitRodzaj() {
 		return limitRodzaj;
+	}
+	
+	public boolean isLimitOn() {
+		return limitOn;
+	}
+	
+	public int getTrybLimitu() {
+		return trybLimitu;
+	}
+	
+	public int getSprawdzajSumujac() {
+		return sprawdzajSumujac;
+	}
+	
+	public Date getDataLimitu() {
+		return dataLimitu;
 	}
 	
 	public void setCzynnikWaluty(float czynnikWaluty) {
@@ -110,11 +131,27 @@ public class Ustawienia implements Serializable{
 		this.limitRodzaj = limitRodzaj;
 	}
 	
-	public static void zapiszUstawienia() {
+	public void setLimitOn(boolean limitOn) {
+		this.limitOn = limitOn;
+	}
+	
+	public void setTrybLimitu(int trybLimitu) {
+		this.trybLimitu = trybLimitu;
+	}
+	
+	public void setSprawdzajSumujac(int sprawdzajSumujac) {
+		this.sprawdzajSumujac = sprawdzajSumujac;
+	}
+	
+	public void setDataLimitu(Date dataLimitu) {
+		this.dataLimitu = dataLimitu;
+	}
+	
+	public void zapiszUstawienia() {
 		try {
 			FileOutputStream fos = new FileOutputStream("ustawienia.ser");
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
-			oos.writeObject(ustawienia);
+			oos.writeObject(this);
 			oos.close();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -125,28 +162,9 @@ public class Ustawienia implements Serializable{
 		}	
 	}
 	
-	public static void wczytajUstawienia() {
-		try {
-			FileInputStream fis = new FileInputStream("ustawienia.ser");
-			ObjectInputStream ois = new ObjectInputStream(fis);
-			ustawienia = (Ustawienia) ois.readObject();
-			ois.close();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	public static String getIndexFaktury() {
+	public String getIndexFaktury() {
 		String nrFaktury = nrNastepnejFaktury + "/" + rok;
 		nrNastepnejFaktury++;
 		return nrFaktury;
-	}
-	
+	}	
 }

@@ -24,8 +24,8 @@ public class Fakturka implements Serializable{
 	//------- KONSTRUKTORY
 	
 	public Fakturka() {
-		this.wystawca = Ustawienia.getDomyslnyWystawca();
-		this.vatNaFakturze = Ustawienia.getVat();
+		this.wystawca = Statyczne.getUstawienia().getDomyslnyWystawca();
+		this.vatNaFakturze = Statyczne.getUstawienia().getVat();
 		this.listaProduktow = new ArrayList<>();
 		this.zamknieta = false;
 		this.uwzgledniona = true;
@@ -112,7 +112,7 @@ public class Fakturka implements Serializable{
 	}
 	
 	public void setNrFaktury() {
-		this.nrFaktury = Ustawienia.getIndexFaktury();
+		this.nrFaktury = Statyczne.getUstawienia().getIndexFaktury();
 	}
 	
 	public void setUwzgledniona(boolean uwzgledniona) {

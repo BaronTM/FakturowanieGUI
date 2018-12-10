@@ -132,7 +132,7 @@ public class PanelKlientow extends JPanel {
 			}
 			element[2] = Float.toString(sumaNet);
 			element[3] = Float.toString(sumaBr);
-			element[4] = Ustawienia.getWaluta();
+			element[4] = Statyczne.getUstawienia().getWaluta();
 			element[5] = iloscFaktur;
 			element[6] = iloscZamknietych;
 			modelListyKlientow.addRow(element);

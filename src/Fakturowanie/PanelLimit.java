@@ -126,7 +126,7 @@ public class PanelLimit extends JPanel{
             }});
 		kwotaTxt.setText(Float.toString(10000.00f));
 		
-		limitNetBrut = new JComboBox<String>(Ustawienia.getRodzajeLimitu());
+		limitNetBrut = new JComboBox<String>(Statyczne.getUstawienia().getRodzajeLimitu());
 		limitNetBrut.setFont(trybAutomatyczny.getFont());
 		limitNetBrut.setBounds(520, 80, 100, 30);
 						

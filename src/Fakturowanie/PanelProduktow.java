@@ -124,7 +124,7 @@ public class PanelProduktow extends JPanel{
 			element[0] = i + 1;
 			element[1] = p.getNazwa();
 			element[2] = p.getCenaNetto();
-			element[3] = Ustawienia.getWaluta();
+			element[3] = Statyczne.getUstawienia().getWaluta();
 			element[4] = p.getJednostka();
 			modelListyProduktow.addRow(element);
 			i++;

@@ -4,15 +4,23 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 
 import java.awt.Font;
+import java.text.ParseException;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
+import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.text.MaskFormatter;
 
 public class PanelNowejFaktury extends JPanel{
 	
@@ -26,6 +34,8 @@ public class PanelNowejFaktury extends JPanel{
 	private JButton dodajProdukt;
 	private JButton zapiszFakture;
 	private JButton zamknijFakture;
+	private JButton wybierzKlienta;
+	private JButton wybierzWystawce;
 	private JPanel panelPodEtykiety;
 	private JPanel panelWystawcy;
 	private JPanel panelKlienta;
@@ -38,12 +48,24 @@ public class PanelNowejFaktury extends JPanel{
 	private JComboBox<String> formaPlatnosciCB;
 	private Font czcionkaEtykiet;
 	private TabelaZakupow lista;
+	private JLayeredPane layeredPane;
+	private JPanel zaslona;
+	private RamkaDodawaniaKlienta ramkaDodawaniaKlienta;
+	private RamkaDodawaniaWystawcy ramkaDodawaniaWystawcy;
 	
 	public PanelNowejFaktury() {
 		super();
 		this.setBounds(260, 0, 740, 680);
 		this.setLayout(null);
 		this.setBackground(Color.YELLOW);
+		
+		layeredPane = new JLayeredPane();
+		layeredPane.setBounds(0, 0, 740, 680);
+		zaslona = new JPanel();
+		zaslona.setLayout(null);
+		zaslona.setBounds(0, 0, 740, 680);
+		zaslona.setBackground(Color.BLACK);
+		zaslona.setVisible(false);
 		
 		tytul = new JLabel("NOWA FAKTURA");
 		tytul.setFont(new Font("TimesRoman", Font.BOLD, 30));
@@ -86,13 +108,20 @@ public class PanelNowejFaktury extends JPanel{
 		
 		dodajProdukt = new JButton("Dodaj produkt");
 		dodajProdukt.setFont(new Font("TimesRoman", Font.BOLD, 15));
-		dodajProdukt.setBounds(510, 210, 180, 30);
+		dodajProdukt.setBounds(510, 260, 180, 30);
+		
+		wybierzKlienta = new JButton("Wybierz Klienta");
+		wybierzKlienta.setFont(dodajProdukt.getFont());
+		wybierzKlienta.setBounds(40, 210, 200, 30);
+		
+		wybierzWystawce = new JButton("Wybierz Wystawcę");
+		wybierzWystawce.setFont(dodajProdukt.getFont());
+		wybierzWystawce.setBounds(500, 210, 200, 30);
 		
 		uwzgledniona = new JCheckBox("Faktura uwzględniona w limicie");
 		uwzgledniona.setFont(dodajProdukt.getFont());
-		uwzgledniona.setBounds(50, 210, 300, 30);
+		uwzgledniona.setBounds(50, 260, 300, 30);
 			
-		
 		//----------------------- TESTOWE
 		Wystawca wystawca = new Wystawca("Janusz", "Romanowski", "MojaFirma", 7174563234l, "ul. Srebrna 485, 36-741 Lublin");
 		this.uzupelnijEtykieteWystawcy(wystawca);
@@ -123,7 +152,7 @@ public class PanelNowejFaktury extends JPanel{
 		panelPodListe = new JPanel();
 		panelPodListe.setLayout(new BorderLayout());
 		panelPodListe.add(listaScroll, BorderLayout.CENTER);
-		panelPodListe.setBounds(30, 250, 680, 250);
+		panelPodListe.setBounds(30, 300, 680, 200);
 		
 		formaPlatnosciLab = new JLabel("Forma Platnosci");
 		formaPlatnosciLab.setFont(klientLab.getFont());
@@ -152,14 +181,32 @@ public class PanelNowejFaktury extends JPanel{
 		panelPodsumowania.add(panelPrzyciskowDolnych, BorderLayout.WEST);
 		panelPodsumowania.setBounds(30, 570, 680, 70);
 		
-		this.add(tytul);
-		this.add(panelPodEtykiety);
-		this.add(panelPodListe);
-		this.add(dodajProdukt);
-		this.add(panelPodsumowania);
-		this.add(uwzgledniona);
-		this.add(formaPlatnosciCB);
-		this.add(formaPlatnosciLab);
+		ramkaDodawaniaKlienta = new RamkaDodawaniaKlienta("Dodawanie Klienta");
+		ramkaDodawaniaWystawcy = new RamkaDodawaniaWystawcy("Dodawanie Wystawcy");
+		// ------- Listenery
+		wybierzKlienta.addActionListener(l -> {
+			ramkaDodawaniaKlienta.setVisible(true);
+			zaslona.setVisible(true);
+		});
+		wybierzWystawce.addActionListener(l -> {
+			ramkaDodawaniaWystawcy.setVisible(true);
+			zaslona.setVisible(true);
+		});
+		
+		this.add(layeredPane);
+		layeredPane.add(tytul, JLayeredPane.DEFAULT_LAYER);
+		layeredPane.add(panelPodEtykiety, JLayeredPane.DEFAULT_LAYER);
+		layeredPane.add(panelPodListe, JLayeredPane.DEFAULT_LAYER);
+		layeredPane.add(dodajProdukt, JLayeredPane.DEFAULT_LAYER);
+		layeredPane.add(wybierzKlienta, JLayeredPane.DEFAULT_LAYER);
+		layeredPane.add(wybierzWystawce, JLayeredPane.DEFAULT_LAYER);
+		layeredPane.add(panelPodsumowania, JLayeredPane.DEFAULT_LAYER);
+		layeredPane.add(uwzgledniona, JLayeredPane.DEFAULT_LAYER);
+		layeredPane.add(formaPlatnosciCB, JLayeredPane.DEFAULT_LAYER);
+		layeredPane.add(formaPlatnosciLab, JLayeredPane.DEFAULT_LAYER);
+		layeredPane.add(zaslona, JLayeredPane.PALETTE_LAYER);
+		layeredPane.add(ramkaDodawaniaKlienta, JLayeredPane.MODAL_LAYER);
+		layeredPane.add(ramkaDodawaniaWystawcy, JLayeredPane.MODAL_LAYER);
 	}
 	
 	private void uzupelnijEtykieteWystawcy(Wystawca wystawca) {
@@ -170,4 +217,101 @@ public class PanelNowejFaktury extends JPanel{
 		etykietaKlienta.setText(klient.toString());
 	}
 
+	private class RamkaDodawaniaKlienta extends JInternalFrame {
+
+		private JPanel panelDodawaniaKlienta;
+		private JPanel panelPodListeKlientow;
+		private DefaultTableModel modelListyKlientow;
+		private JScrollPane listaScrollKlientow;
+		private TabelaKlientow listaKlientow;
+		private JButton dodaj;
+		private JButton anuluj;
+
+		public RamkaDodawaniaKlienta(String nazwa) {
+			super(nazwa, false, false, false, false);
+			this.setBounds(28, 152, 684, 375);
+
+			panelDodawaniaKlienta = new JPanel();
+			panelDodawaniaKlienta.setLayout(null);
+			panelDodawaniaKlienta.setBounds(0, 0, 680, 375);
+			
+			modelListyKlientow = new DefaultTableModel(TabelaKlientow.getNazwyKolumn(), 0);
+			listaKlientow = new TabelaKlientow(modelListyKlientow);
+			listaScrollKlientow = new JScrollPane(listaKlientow);
+			listaScrollKlientow.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+			listaScrollKlientow.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+			panelPodListeKlientow = new JPanel();
+			panelPodListeKlientow.setLayout(new BorderLayout());
+			panelPodListeKlientow.add(listaScrollKlientow, BorderLayout.CENTER);
+			panelPodListeKlientow.setBounds(0, 0, 680, 280);
+
+			dodaj = new JButton("DODAJ");
+			dodaj.setBounds(560, 300, 100, 30);
+			anuluj = new JButton("ANULUJ");
+			anuluj.setBounds(15, 300, 100, 30);
+			
+			panelDodawaniaKlienta.add(panelPodListeKlientow);
+			panelDodawaniaKlienta.add(dodaj);
+			panelDodawaniaKlienta.add(anuluj);
+			
+			// ------- Listenery
+			anuluj.addActionListener(l -> {
+				this.setVisible(false);
+				zaslona.setVisible(false);
+			});
+
+			this.add(panelDodawaniaKlienta);
+			this.setVisible(false);
+		}
+	}
+	
+	private class RamkaDodawaniaWystawcy extends JInternalFrame {
+
+		private JPanel panelDodawaniaWystawcy;
+		private JPanel panelPodListeWystawcow;
+		private DefaultTableModel modelListyWystawcow;
+		private JScrollPane listaScrollWystawcow;
+		private TabelaKlientow listaWystawcow;
+		private JButton dodaj;
+		private JButton anuluj;
+
+		public RamkaDodawaniaWystawcy(String nazwa) {
+			super(nazwa, false, false, false, false);
+			this.setBounds(28, 152, 684, 375);
+
+			panelDodawaniaWystawcy = new JPanel();
+			panelDodawaniaWystawcy.setLayout(null);
+			panelDodawaniaWystawcy.setBounds(0, 0, 680, 375);
+			
+			modelListyWystawcow = new DefaultTableModel(TabelaWystawcow.getNazwyKolumn(), 0);
+			listaWystawcow = new TabelaKlientow(modelListyWystawcow);
+			listaScrollWystawcow = new JScrollPane(listaWystawcow);
+			listaScrollWystawcow.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+			listaScrollWystawcow.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+			panelPodListeWystawcow = new JPanel();
+			panelPodListeWystawcow.setLayout(new BorderLayout());
+			panelPodListeWystawcow.add(listaScrollWystawcow, BorderLayout.CENTER);
+			panelPodListeWystawcow.setBounds(0, 0, 680, 280);
+
+			dodaj = new JButton("DODAJ");
+			dodaj.setBounds(560, 300, 100, 30);
+			anuluj = new JButton("ANULUJ");
+			anuluj.setBounds(15, 300, 100, 30);
+			
+			panelDodawaniaWystawcy.add(panelPodListeWystawcow);
+			panelDodawaniaWystawcy.add(dodaj);
+			panelDodawaniaWystawcy.add(anuluj);
+			
+			// ------- Listenery
+			anuluj.addActionListener(l -> {
+				this.setVisible(false);
+				zaslona.setVisible(false);
+			});
+
+			this.add(panelDodawaniaWystawcy);
+			this.setVisible(false);
+		}
+	}
 }

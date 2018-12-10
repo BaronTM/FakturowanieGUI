@@ -69,7 +69,7 @@ public class PanelUstawien extends JPanel{
 		iloscLab.setFont(labelFont);
 		iloscLab.setBounds(30, 300, 310, 30);
 		
-		walutaCBox = new JComboBox<>(Ustawienia.getWalutyDoWyboru());
+		walutaCBox = new JComboBox<>(Statyczne.getUstawienia().getWalutyDoWyboru());
 		walutaCBox.setBounds(400, 100, 100, 30);
 		czynnikTxt = new JFormattedTextField();
 		czynnikTxt.setBounds(400, 150, 100, 30);
@@ -87,18 +87,18 @@ public class PanelUstawien extends JPanel{
                 formatter.setMaximum(100.00);
                 return formatter;
             }});
-		czynnikTxt.setText(Float.toString(Ustawienia.getCzynnikWaluty()));
-		vatSpin = new JSpinner(new SpinnerNumberModel(Ustawienia.getVat(), 0, 1, 0.01));
+		czynnikTxt.setText(Float.toString(Statyczne.getUstawienia().getCzynnikWaluty()));
+		vatSpin = new JSpinner(new SpinnerNumberModel(Statyczne.getUstawienia().getVat(), 0, 1, 0.01));
 		vatSpin.setBounds(400, 200, 100, 30);
 		vatSpin.setEditor(new JSpinner.NumberEditor(vatSpin, "### %"));
 		((JSpinner.DefaultEditor) vatSpin.getEditor()).getTextField().setEditable(false);
 		((JSpinner.DefaultEditor) vatSpin.getEditor()).getTextField().setHorizontalAlignment(SwingConstants.CENTER);
-		rokSpin = new JSpinner(new SpinnerNumberModel(Ustawienia.getRok(), 2000, 2050, 1));
+		rokSpin = new JSpinner(new SpinnerNumberModel(Statyczne.getUstawienia().getRok(), 2000, 2050, 1));
 		rokSpin.setBounds(400, 250, 100, 30);
 		rokSpin.setEditor(new JSpinner.NumberEditor(rokSpin, "####"));
 		((JSpinner.DefaultEditor) rokSpin.getEditor()).getTextField().setEditable(false);
 		((JSpinner.DefaultEditor) rokSpin.getEditor()).getTextField().setHorizontalAlignment(SwingConstants.CENTER);
-		iloscTxt = new JTextField(Integer.toString(Ustawienia.getNrNastepnejFaktury() - 1));
+		iloscTxt = new JTextField(Integer.toString(Statyczne.getUstawienia().getNrNastepnejFaktury() - 1));
 		iloscTxt.setBounds(400, 300, 100, 30);
 		iloscTxt.setHorizontalAlignment(SwingConstants.CENTER);
 		iloscTxt.setEditable(false);

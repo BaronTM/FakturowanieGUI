@@ -84,6 +84,7 @@ public class PanelMenu extends JPanel {
 		butKlienci.addActionListener(l -> {
 			wylaczPanele();
 			Aplikacja.getPanelKlientow().setVisible(true);
+			Aplikacja.getPanelKlientow().odswiezListy();
 		});
 		butProdukty.addActionListener(l -> {
 			wylaczPanele();
@@ -93,6 +94,7 @@ public class PanelMenu extends JPanel {
 		butWystawcy.addActionListener(l -> {
 			wylaczPanele();
 			Aplikacja.getPanelWystawcow().setVisible(true);
+			Aplikacja.getPanelWystawcow().odswiezListy();
 		});
 		butLimit.addActionListener(l -> {
 			wylaczPanele();
