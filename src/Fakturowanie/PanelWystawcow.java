@@ -270,6 +270,7 @@ public class PanelWystawcow extends JPanel{
 							nipTxt.setText("");
 							adresTxt.setText("");
 							odswiezListy();
+							Historia.zapiszHistorie();
 						}
 					}
 				}

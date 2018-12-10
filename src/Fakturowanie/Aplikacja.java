@@ -29,6 +29,8 @@ public class Aplikacja {
 		ramka.setSize(1000, 700);
 		ramka.getContentPane().setLayout(null);
 		
+		Historia.wczytajHistorie();
+		
 		panelMenu = new PanelMenu();
 		panelFunkcyjny = new PanelFunkcyjny();
 		panelNowejFaktury = new PanelNowejFaktury();

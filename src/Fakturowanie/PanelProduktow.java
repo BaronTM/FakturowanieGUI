@@ -211,8 +211,15 @@ public class PanelProduktow extends JPanel{
 				jednostkaCB.setSelectedIndex(0);
 			});			
 			dodaj.addActionListener(l -> {
-				String[] parts = cenaTxt.getText().split(",");
-				float cenaNowego = Float.parseFloat(parts[0]) + Float.parseFloat(parts[1]) / 100;
+				//float 
+				float cenaNowego = 0.0f;
+				String cenaStr = "";
+				String[] parts = cenaTxt.getText().split(" ");
+				for (String s : parts) {
+					cenaStr += s;
+				}
+				String[] partsCom = cenaStr.split(",");
+				cenaNowego = Float.parseFloat(partsCom[0]) + Float.parseFloat(partsCom[1]) / 100;
 				String nazwaNowego = (String) nazwaTxt.getText();
 				String jednostkaNowego = (String) jednostkaCB.getSelectedItem();
 				if ((cenaNowego < 0) || (nazwaNowego.equals("")) || jednostkaNowego.equals("")) {
@@ -238,6 +245,7 @@ public class PanelProduktow extends JPanel{
 						cenaTxt.setText("0.00");
 						jednostkaCB.setSelectedIndex(0);
 						odswiezListy();
+						Historia.zapiszHistorie();
 					}
 				}				
 			});

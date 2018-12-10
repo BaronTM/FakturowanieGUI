@@ -268,6 +268,7 @@ public class PanelKlientow extends JPanel {
 							nipTxt.setText("");
 							adresTxt.setText("");
 							odswiezListy();
+							Historia.zapiszHistorie();
 						}
 					}
 				}
