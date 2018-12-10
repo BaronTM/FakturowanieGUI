@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 
 import java.awt.Font;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.text.ParseException;
 import java.util.ArrayList;
 
@@ -17,8 +19,10 @@ import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.MaskFormatter;
@@ -33,6 +37,8 @@ public class PanelNowejFaktury extends JPanel {
 	private JTextArea etykietaKlienta;
 	private JTextArea kwota;
 	private JButton dodajProdukt;
+	private JButton usunProdukt;
+	private JButton edytujPozycje;
 	private JButton zapiszFakture;
 	private JButton zamknijFakture;
 	private JButton wybierzKlienta;
@@ -54,6 +60,7 @@ public class PanelNowejFaktury extends JPanel {
 	private RamkaDodawaniaKlienta ramkaDodawaniaKlienta;
 	private RamkaDodawaniaWystawcy ramkaDodawaniaWystawcy;
 	private RamkaDodawaniaProduktu ramkaDodawaniaProduktu;
+	private RamkaEdycjaPozycji ramkaEdycjaPozycji;
 	private DefaultTableModel modelListyZakupow;
 	private ArrayList<Pozycja> listaZakupow;
 
@@ -70,7 +77,7 @@ public class PanelNowejFaktury extends JPanel {
 		zaslona.setBounds(0, 0, 740, 680);
 		zaslona.setBackground(Color.BLACK);
 		zaslona.setVisible(false);
-		
+
 		listaZakupow = new ArrayList<>();
 
 		tytul = new JLabel("NOWA FAKTURA");
@@ -114,7 +121,15 @@ public class PanelNowejFaktury extends JPanel {
 
 		dodajProdukt = new JButton("Dodaj produkt");
 		dodajProdukt.setFont(new Font("TimesRoman", Font.BOLD, 15));
-		dodajProdukt.setBounds(510, 260, 180, 30);
+		dodajProdukt.setBounds(550, 260, 150, 30);
+
+		usunProdukt = new JButton("Usun produkt");
+		usunProdukt.setFont(dodajProdukt.getFont());
+		usunProdukt.setBounds(400, 260, 150, 30);
+		
+		edytujPozycje = new JButton("Edytuj pozycję");
+		edytujPozycje.setFont(dodajProdukt.getFont());
+		edytujPozycje.setBounds(40, 510, 150, 30);
 
 		wybierzKlienta = new JButton("Wybierz Klienta");
 		wybierzKlienta.setFont(dodajProdukt.getFont());
@@ -128,7 +143,13 @@ public class PanelNowejFaktury extends JPanel {
 		uwzgledniona.setFont(dodajProdukt.getFont());
 		uwzgledniona.setBounds(50, 260, 300, 30);
 
-		modelListyZakupow = new DefaultTableModel(TabelaZakupow.getNazwyKolumn(), 0);
+		modelListyZakupow = new DefaultTableModel(TabelaZakupow.getNazwyKolumn(), 0) {
+			@Override
+			public boolean isCellEditable(int row, int column)
+			{
+				return false;
+			}
+		};
 		lista = new TabelaZakupow(modelListyZakupow);
 		listaScroll = new JScrollPane(lista);
 		listaScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -178,7 +199,8 @@ public class PanelNowejFaktury extends JPanel {
 		ramkaDodawaniaKlienta = new RamkaDodawaniaKlienta("Dodawanie Klienta");
 		ramkaDodawaniaWystawcy = new RamkaDodawaniaWystawcy("Dodawanie Wystawcy");
 		ramkaDodawaniaProduktu = new RamkaDodawaniaProduktu("Dodawanie Produktu");
-
+		ramkaEdycjaPozycji = new RamkaEdycjaPozycji("Edycja Pozycji");
+		
 		// ------- Listenery
 		wybierzKlienta.addActionListener(l -> {
 			ramkaDodawaniaKlienta.setVisible(true);
@@ -195,12 +217,47 @@ public class PanelNowejFaktury extends JPanel {
 			ramkaDodawaniaProduktu.odswiezListy();
 			zaslona.setVisible(true);
 		});
+		usunProdukt.addActionListener(l -> {
+			int sel = lista.getSelectedRow();
+			if (sel == -1) {
+				JOptionPane.showMessageDialog(this, "Nie wybrano pozycji.", "Błąd", JOptionPane.ERROR_MESSAGE);
+			} else {
+				if (JOptionPane.showOptionDialog(this, "Czy na pewno chcesz usunąć ten produkt?", "Usuwanie",
+						JOptionPane.YES_NO_OPTION, 
+					    JOptionPane.QUESTION_MESSAGE,
+					    null, new Object[] {"Tak", "Nie"}, "Tak") == 0) {
+					for (Pozycja k : listaZakupow) {
+						if (k.getProdukt().getNazwa().equals(lista.getValueAt(sel, 1).toString())) {
+							listaZakupow.remove(k);
+							odswiezListeZakupow();
+							break;
+						}
+					}
+				}
+			}
+		});
+		edytujPozycje.addActionListener(l -> {
+			int sel = lista.getSelectedRow();
+			if (sel == -1) {
+				JOptionPane.showMessageDialog(this, "Nie wybrano pozycji.", "Błąd", JOptionPane.ERROR_MESSAGE);
+			} else {
+				for (Pozycja k : listaZakupow) {
+					if (k.getProdukt().getNazwa().equals(lista.getValueAt(sel, 1).toString())) {
+						ramkaEdycjaPozycji.setVisible(true, k);
+						zaslona.setVisible(true);
+						break;
+					}
+				}		
+			}
+		});
 
 		this.add(layeredPane);
 		layeredPane.add(tytul, JLayeredPane.DEFAULT_LAYER);
 		layeredPane.add(panelPodEtykiety, JLayeredPane.DEFAULT_LAYER);
 		layeredPane.add(panelPodListe, JLayeredPane.DEFAULT_LAYER);
 		layeredPane.add(dodajProdukt, JLayeredPane.DEFAULT_LAYER);
+		layeredPane.add(usunProdukt, JLayeredPane.DEFAULT_LAYER);
+		layeredPane.add(edytujPozycje, JLayeredPane.DEFAULT_LAYER);
 		layeredPane.add(wybierzKlienta, JLayeredPane.DEFAULT_LAYER);
 		layeredPane.add(wybierzWystawce, JLayeredPane.DEFAULT_LAYER);
 		layeredPane.add(panelPodsumowania, JLayeredPane.DEFAULT_LAYER);
@@ -211,6 +268,7 @@ public class PanelNowejFaktury extends JPanel {
 		layeredPane.add(ramkaDodawaniaKlienta, JLayeredPane.MODAL_LAYER);
 		layeredPane.add(ramkaDodawaniaWystawcy, JLayeredPane.MODAL_LAYER);
 		layeredPane.add(ramkaDodawaniaProduktu, JLayeredPane.MODAL_LAYER);
+		layeredPane.add(ramkaEdycjaPozycji, JLayeredPane.MODAL_LAYER);
 	}
 
 	private void uzupelnijEtykieteWystawcy(Wystawca wystawca) {
@@ -220,7 +278,7 @@ public class PanelNowejFaktury extends JPanel {
 	private void uzupelnijEtykieteKlienta(Klient klient) {
 		etykietaKlienta.setText(klient.toString());
 	}
-	
+
 	public void odswiezListeZakupow() {
 		for (int k = modelListyZakupow.getRowCount(); k > 0; k--) {
 			modelListyZakupow.removeRow(0);
@@ -228,7 +286,7 @@ public class PanelNowejFaktury extends JPanel {
 		int i = 0;
 		for (Pozycja p : listaZakupow) {
 			p.oblicz();
-			Object[] element = new Object[10];
+			Object[] element = new Object[9];
 			element[0] = i + 1;
 			element[1] = p.getProdukt().getNazwa();
 			element[2] = p.getProdukt().getCenaNetto();
@@ -238,7 +296,6 @@ public class PanelNowejFaktury extends JPanel {
 			element[6] = String.format("%.0f%%", p.getZnizka() * 100);
 			element[7] = p.getKwotaNettoPoz();
 			element[8] = p.getKwotaBruttoPoz();
-			element[9] = "UUU";
 			modelListyZakupow.addRow(element);
 			i++;
 		}
@@ -262,7 +319,13 @@ public class PanelNowejFaktury extends JPanel {
 			panelDodawaniaKlienta.setLayout(null);
 			panelDodawaniaKlienta.setBounds(0, 0, 680, 375);
 
-			modelListyKlientow = new DefaultTableModel(TabelaKlientowFakturka.getNazwyKolumn(), 0);
+			modelListyKlientow = new DefaultTableModel(TabelaKlientowFakturka.getNazwyKolumn(), 0){
+				@Override
+				public boolean isCellEditable(int row, int column)
+				{
+					return false;
+				}
+			};
 			listaKlientow = new TabelaKlientowFakturka(modelListyKlientow);
 			listaScrollKlientow = new JScrollPane(listaKlientow);
 			listaScrollKlientow.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -344,7 +407,13 @@ public class PanelNowejFaktury extends JPanel {
 			panelDodawaniaWystawcy.setLayout(null);
 			panelDodawaniaWystawcy.setBounds(0, 0, 680, 375);
 
-			modelListyWystawcow = new DefaultTableModel(TabelaWystawcowFakturka.getNazwyKolumn(), 0);
+			modelListyWystawcow = new DefaultTableModel(TabelaWystawcowFakturka.getNazwyKolumn(), 0){
+				@Override
+				public boolean isCellEditable(int row, int column)
+				{
+					return false;
+				}
+			};
 			listaWystawcow = new TabelaWystawcowFakturka(modelListyWystawcow);
 			listaScrollWystawcow = new JScrollPane(listaWystawcow);
 			listaScrollWystawcow.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -377,6 +446,7 @@ public class PanelNowejFaktury extends JPanel {
 					for (Wystawca k : Statyczne.getHistoria().getWystrawcy()) {
 						if (k.nipToString().equals(listaWystawcow.getValueAt(sel, 4).toString())) {
 							uzupelnijEtykieteWystawcy(k);
+							Statyczne.getUstawienia().setDomyslnyWystawca(k);
 							this.setVisible(false);
 							zaslona.setVisible(false);
 							break;
@@ -426,7 +496,13 @@ public class PanelNowejFaktury extends JPanel {
 			panelDodawaniaProduktow.setLayout(null);
 			panelDodawaniaProduktow.setBounds(0, 0, 480, 375);
 
-			modelListyProduktow = new DefaultTableModel(TabelaProduktow.getNazwyKolumn(), 0);
+			modelListyProduktow = new DefaultTableModel(TabelaProduktow.getNazwyKolumn(), 0){
+				@Override
+				public boolean isCellEditable(int row, int column)
+				{
+					return false;
+				}
+			};
 			listaProduktow = new TabelaProduktow(modelListyProduktow);
 			listaScrollProduktow = new JScrollPane(listaProduktow);
 			listaScrollProduktow.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -464,7 +540,8 @@ public class PanelNowejFaktury extends JPanel {
 						}
 					}
 					if (zawiera) {
-						JOptionPane.showMessageDialog(this, "Ten produkt został już dodany.", "Błąd", JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(this, "Ten produkt został już dodany.", "Błąd",
+								JOptionPane.ERROR_MESSAGE);
 					} else {
 						for (Produkt p : Statyczne.getHistoria().getProdukty()) {
 							if (p.getNazwa().equals(listaProduktow.getValueAt(sel, 1).toString())) {
@@ -496,6 +573,138 @@ public class PanelNowejFaktury extends JPanel {
 				modelListyProduktow.addRow(element);
 				i++;
 			}
+		}
+	}
+	
+	private class RamkaEdycjaPozycji extends JInternalFrame {
+
+		private JPanel panelEdycjiPozycji;
+		private JButton dodaj;
+		private JButton anuluj;
+		private JLabel nazwaLab;
+		private JLabel nazwaTxt;
+		private JLabel cenaNettoLab;
+		private JLabel cenaNettoTxt;
+		private JLabel jednostkaLab;
+		private JLabel jednostkaTxt;
+		private JLabel iloscLab;
+		private JLabel vatLab;
+		private JLabel rabatLab;
+		private Font fontLab;
+		private Font fontTxt;
+		private JSpinner iloscSpin;
+		private JSpinner vatSpin;
+		private JSpinner rabatSpin;
+		private Pozycja poz;
+		
+
+		public RamkaEdycjaPozycji(String nazwa) {
+			super(nazwa, false, false, false, false);
+			this.setBounds(170, 150, 400, 380);
+			
+			fontLab = new Font("TimesRoman", Font.BOLD, 20);
+			fontTxt = new Font("TimesRoman", Font.ITALIC, 15);
+			
+			panelEdycjiPozycji = new JPanel();
+			panelEdycjiPozycji.setLayout(null);
+			panelEdycjiPozycji.setBounds(0, 0, 400, 380);
+
+			nazwaLab = new JLabel("Nazwa:");
+			nazwaLab.setFont(fontLab);
+			nazwaLab.setBounds(15, 15, 100, 30);
+			nazwaTxt = new JLabel("nazwa");
+			nazwaTxt.setFont(fontTxt);
+			nazwaTxt.setBounds(180, 15, 200, 30);
+			nazwaTxt.setHorizontalAlignment(JLabel.CENTER);
+			cenaNettoLab = new JLabel("Cena Netto:");
+			cenaNettoLab.setFont(fontLab);
+			cenaNettoLab.setBounds(15, 60, 150, 30);
+			cenaNettoTxt = new JLabel("123456");
+			cenaNettoTxt.setFont(fontTxt);
+			cenaNettoTxt.setBounds(180, 60, 200, 30);
+			cenaNettoTxt.setHorizontalAlignment(JLabel.CENTER);
+			jednostkaLab = new JLabel("Jednostka:");
+			jednostkaLab.setFont(fontLab);
+			jednostkaLab.setBounds(15, 105, 150, 30);
+			jednostkaTxt = new JLabel("SZT");
+			jednostkaTxt.setFont(fontTxt);
+			jednostkaTxt.setBounds(180, 105, 200, 30);
+			jednostkaTxt.setHorizontalAlignment(JLabel.CENTER);
+			iloscLab = new JLabel("Ilosc:");
+			iloscLab.setFont(fontLab);
+			iloscLab.setBounds(15, 150, 150, 30);
+			vatLab = new JLabel("Vat:");
+			vatLab.setFont(fontLab);
+			vatLab.setBounds(15, 195, 150, 30);
+			rabatLab = new JLabel("Rabat:");
+			rabatLab.setFont(fontLab);
+			rabatLab.setBounds(15, 240, 150, 30);
+			
+			iloscSpin = new JSpinner(new SpinnerNumberModel(1, 1, 100, 1));
+			iloscSpin.setBounds(230, 150, 100, 30);
+			iloscSpin.setEditor(new JSpinner.NumberEditor(iloscSpin, "###"));
+			((JSpinner.DefaultEditor) iloscSpin.getEditor()).getTextField().setEditable(false);
+			((JSpinner.DefaultEditor) iloscSpin.getEditor()).getTextField().setHorizontalAlignment(SwingConstants.CENTER);
+			
+			vatSpin = new JSpinner(new SpinnerNumberModel(Statyczne.getUstawienia().getVat(), 0, 1, 0.01));
+			vatSpin.setBounds(230, 195, 100, 30);
+			vatSpin.setEditor(new JSpinner.NumberEditor(vatSpin, "### %"));
+			((JSpinner.DefaultEditor) vatSpin.getEditor()).getTextField().setEditable(false);
+			((JSpinner.DefaultEditor) vatSpin.getEditor()).getTextField().setHorizontalAlignment(SwingConstants.CENTER);
+			
+			rabatSpin = new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01));
+			rabatSpin.setBounds(230, 240, 100, 30);
+			rabatSpin.setEditor(new JSpinner.NumberEditor(rabatSpin, "### %"));
+			((JSpinner.DefaultEditor) rabatSpin.getEditor()).getTextField().setEditable(false);
+			((JSpinner.DefaultEditor) rabatSpin.getEditor()).getTextField().setHorizontalAlignment(SwingConstants.CENTER);
+			
+			dodaj = new JButton("DODAJ ZMIANY");
+			dodaj.setBounds(220, 300, 150, 30);
+			anuluj = new JButton("ANULUJ");
+			anuluj.setBounds(15, 300, 100, 30);
+
+			// ------- Listenery
+			anuluj.addActionListener(l -> {
+				this.setVisible(false);
+				zaslona.setVisible(false);
+			});
+			dodaj.addActionListener(l -> {
+				poz.setIlosc((int) iloscSpin.getValue());
+				poz.setVatPoz(Float.parseFloat(vatSpin.getValue().toString()));
+				poz.setZnizka(Float.parseFloat(rabatSpin.getValue().toString()));
+				odswiezListeZakupow();
+				this.setVisible(false);
+				zaslona.setVisible(false);
+			});
+
+			panelEdycjiPozycji.add(dodaj);
+			panelEdycjiPozycji.add(anuluj);
+			panelEdycjiPozycji.add(nazwaLab);
+			panelEdycjiPozycji.add(nazwaTxt);
+			panelEdycjiPozycji.add(cenaNettoLab);
+			panelEdycjiPozycji.add(cenaNettoTxt);
+			panelEdycjiPozycji.add(jednostkaLab);
+			panelEdycjiPozycji.add(jednostkaTxt);
+			panelEdycjiPozycji.add(iloscLab);
+			panelEdycjiPozycji.add(iloscSpin);
+			panelEdycjiPozycji.add(vatLab);
+			panelEdycjiPozycji.add(vatSpin);
+			panelEdycjiPozycji.add(rabatLab);
+			panelEdycjiPozycji.add(rabatSpin);
+			
+			this.add(panelEdycjiPozycji);
+			this.setVisible(false);
+		}
+		
+		public void setVisible(boolean vis, Pozycja p) {
+			this.setVisible(vis);
+			this.poz = p;
+			nazwaTxt.setText(poz.getProdukt().getNazwa());
+			cenaNettoTxt.setText(Float.toString(poz.getProdukt().getCenaNetto()));
+			jednostkaTxt.setText(poz.getProdukt().getJednostka());
+			iloscSpin.setValue(poz.getIlosc());
+			vatSpin.setValue(poz.getVatPoz());
+			rabatSpin.setValue(poz.getZnizka());
 		}
 	}
 }
