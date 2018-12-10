@@ -194,6 +194,7 @@ public class PanelKlientow extends JPanel {
 			nazwaFirmyTxt.setBounds(200, 105, 200, 30);
 			try {
 				nipTxt = new JFormattedTextField(new MaskFormatter("###-###-##-##"));
+				nipTxt.setFocusLostBehavior(JFormattedTextField.PERSIST);
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -250,14 +251,24 @@ public class PanelKlientow extends JPanel {
 						JOptionPane.showMessageDialog(this, "Wprowadź wymagane dane.", "Błąd wprowadzania",
 								JOptionPane.ERROR_MESSAGE);
 					} else {
-						Historia.getKlienci().add(new Klient(imie, nazwisko, nazwaFirmy, nip, adres));
-						imieTxt.setText("");
-						nazwiskoTxt.setText("");
-						nazwaFirmyTxt.setText("");
-						nipTxt.setText("000-000-00-00");
-						nipTxt.setText("");
-						adresTxt.setText("");
-						odswiezListy();
+						boolean istnieje = false;
+						for (Klient k : Historia.getKlienci()) {
+							if (Long.compare(k.getNip(), nip) == 0) {
+								istnieje = true;
+							}
+						}
+						if (istnieje) {
+							JOptionPane.showMessageDialog(this, "Klient o takim NIPie juz istnieje.", "Błąd",
+									JOptionPane.ERROR_MESSAGE);
+						} else {
+							Historia.getKlienci().add(new Klient(imie, nazwisko, nazwaFirmy, nip, adres));
+							imieTxt.setText("");
+							nazwiskoTxt.setText("");
+							nazwaFirmyTxt.setText("");
+							nipTxt.setText("");
+							adresTxt.setText("");
+							odswiezListy();
+						}
 					}
 				}
 			});

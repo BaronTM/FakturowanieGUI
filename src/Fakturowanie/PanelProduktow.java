@@ -221,12 +221,25 @@ public class PanelProduktow extends JPanel{
 						    "Błąd wprowadzania",
 						    JOptionPane.ERROR_MESSAGE);
 				} else {
-					Historia.getProdukty().add(new Produkt(nazwaNowego, cenaNowego, jednostkaNowego));
-				}
-				nazwaTxt.setText("");
-				cenaTxt.setText("0.00");
-				jednostkaCB.setSelectedIndex(0);
-				odswiezListy();
+					boolean istnieje = false;
+					for (Produkt p : Historia.getProdukty()) {
+						if (p.getNazwa().equals(nazwaNowego)) {
+							istnieje = true;
+						}
+					}
+					if (istnieje) {
+						JOptionPane.showMessageDialog(this,
+							    "Produkt o takiej nazwie już istnieje.",
+							    "Błąd",
+							    JOptionPane.ERROR_MESSAGE);
+					} else {
+						Historia.getProdukty().add(new Produkt(nazwaNowego, cenaNowego, jednostkaNowego));
+						nazwaTxt.setText("");
+						cenaTxt.setText("0.00");
+						jednostkaCB.setSelectedIndex(0);
+						odswiezListy();
+					}
+				}				
 			});
 
 			this.add(panelDodawania);

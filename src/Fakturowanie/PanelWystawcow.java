@@ -196,6 +196,7 @@ public class PanelWystawcow extends JPanel{
 			nazwaFirmyTxt.setBounds(200, 105, 200, 30);
 			try {
 				nipTxt = new JFormattedTextField(new MaskFormatter("###-###-##-##"));
+				nipTxt.setFocusLostBehavior(JFormattedTextField.PERSIST);
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -252,13 +253,24 @@ public class PanelWystawcow extends JPanel{
 						JOptionPane.showMessageDialog(this, "Wprowadź wymagane dane.", "Błąd wprowadzania",
 								JOptionPane.ERROR_MESSAGE);
 					} else {
-						Historia.getWystrawcy().add(new Wystawca(imie, nazwisko, nazwaFirmy, nip, adres));
-						imieTxt.setText("");
-						nazwiskoTxt.setText("");
-						nazwaFirmyTxt.setText("");
-						nipTxt.setText("");
-						adresTxt.setText("");
-						odswiezListy();
+						boolean istnieje = false;
+						for (Wystawca k : Historia.getWystrawcy()) {
+							if (Long.compare(k.getNip(), nip) == 0) {
+								istnieje = true;
+							}
+						}
+						if (istnieje) {
+							JOptionPane.showMessageDialog(this, "Wystawca o takim NIPie juz istnieje.", "Błąd",
+									JOptionPane.ERROR_MESSAGE);
+						} else {
+							Historia.getWystrawcy().add(new Wystawca(imie, nazwisko, nazwaFirmy, nip, adres));
+							imieTxt.setText("");
+							nazwiskoTxt.setText("");
+							nazwaFirmyTxt.setText("");
+							nipTxt.setText("");
+							adresTxt.setText("");
+							odswiezListy();
+						}
 					}
 				}
 			});

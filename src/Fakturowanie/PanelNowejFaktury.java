@@ -127,7 +127,7 @@ public class PanelNowejFaktury extends JPanel{
 		
 		formaPlatnosciLab = new JLabel("Forma Platnosci");
 		formaPlatnosciLab.setFont(klientLab.getFont());
-		formaPlatnosciLab.setBounds(430, 520, 130, 30);
+		formaPlatnosciLab.setBounds(420, 520, 150, 30);
 		
 		formaPlatnosciCB = new JComboBox<String>(Fakturka.getDostepneFormyPlatnosci());
 		formaPlatnosciCB.setFont(formaPlatnosciLab.getFont());
