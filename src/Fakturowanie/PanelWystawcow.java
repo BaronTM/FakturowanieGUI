@@ -10,10 +10,12 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.text.MaskFormatter;
 
 
@@ -31,7 +33,7 @@ public class PanelWystawcow extends JPanel{
 	private JButton nowyWystawca;
 	private JLayeredPane layeredPane;
 	private RamkaDodawaniaWystawcy ramkaDodawania;
-
+	private DefaultTableModel modelListyWystawcow;
 	
 	public PanelWystawcow() {
 		super();
@@ -52,13 +54,8 @@ public class PanelWystawcow extends JPanel{
 		tytul.setBounds(120, 20, 500, 40);
 		tytul.setHorizontalAlignment(SwingConstants.CENTER);
 		
-		// ---------------------------- TESTOWE
-		Object[][] data = {
-				{"1", "MALYNOWSKY Roman Malinowski", 145505.43, 214012.99, "PLN", 160, 
-					100}
-				};
-		
-		lista = new TabelaWystawcow(data, TabelaKlientow.getNazwyKolumn());
+		modelListyWystawcow = new DefaultTableModel(TabelaWystawcow.getNazwyKolumn(), 0);
+		lista = new TabelaWystawcow(modelListyWystawcow);
 		listaScroll = new JScrollPane(lista);
 		listaScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		listaScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -110,6 +107,40 @@ public class PanelWystawcow extends JPanel{
 		layeredPane.add(zaslona, JLayeredPane.PALETTE_LAYER);
 		layeredPane.add(ramkaDodawania, JLayeredPane.MODAL_LAYER);				
 	}
+	
+	public void odswiezListy() {
+		for (int k = modelListyWystawcow.getRowCount(); k > 0; k--) {
+			modelListyWystawcow.removeRow(0);
+		}
+		int i = 0;
+		for (Wystawca p : Historia.getWystrawcy()) {
+			Object[] element = new Object[7];
+			float sumaBr = 0;
+			float sumaNet = 0;
+			int iloscFaktur = 0;
+			int iloscZamknietych = 0;
+			element[0] = i + 1;
+			element[1] = p.toString();
+			for (Fakturka f : Historia.getFaktury()) {
+				iloscFaktur++;
+				if (f.getKlient().equals(p)) {
+					sumaBr += f.getCenaKoncowaBrutto();
+					sumaNet += f.getCenaKoncowaNetto();
+				}
+				if (f.isZamknieta()) {
+					iloscZamknietych++;
+				}
+			}
+			element[2] = Float.toString(sumaNet);
+			element[3] = Float.toString(sumaBr);
+			element[4] = Ustawienia.getWaluta();
+			element[5] = iloscFaktur;
+			element[6] = iloscZamknietych;
+			modelListyWystawcow.addRow(element);
+			i++;
+		}
+	}
+
 	
 	private class RamkaDodawaniaWystawcy extends JInternalFrame {
 
@@ -204,6 +235,32 @@ public class PanelWystawcow extends JPanel{
 				nazwaFirmyTxt.setText("");
 				nipTxt.setText("");
 				adresTxt.setText("");
+			});
+			dodaj.addActionListener(l -> {
+				String imie = imieTxt.getText();
+				String nazwisko = nazwiskoTxt.getText();
+				String nazwaFirmy = nazwaFirmyTxt.getText();
+				String[] nipParts = nipTxt.getText().split("-");
+				String nipStr = nipParts[0] + nipParts[1] + nipParts[2] + nipParts[3];
+				String adres = adresTxt.getText();
+				if (nipStr.contains(" ")) {
+					JOptionPane.showMessageDialog(this, "Nieprawidłowy nip.", "Błąd wprowadzania",
+							JOptionPane.ERROR_MESSAGE);
+				} else {
+					Long nip = 0 + Long.parseLong(nipStr);
+					if ((nip < 1000000000) || (nazwaFirmy.equals("") && (imie.equals("") || nazwisko.equals("")))) {
+						JOptionPane.showMessageDialog(this, "Wprowadź wymagane dane.", "Błąd wprowadzania",
+								JOptionPane.ERROR_MESSAGE);
+					} else {
+						Historia.getWystrawcy().add(new Wystawca(imie, nazwisko, nazwaFirmy, nip, adres));
+						imieTxt.setText("");
+						nazwiskoTxt.setText("");
+						nazwaFirmyTxt.setText("");
+						nipTxt.setText("");
+						adresTxt.setText("");
+						odswiezListy();
+					}
+				}
 			});
 
 			this.add(panelDodawania);

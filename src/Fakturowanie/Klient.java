@@ -95,15 +95,15 @@ public class Klient implements Serializable{
 	public String toString() {
 		String tekst = "";
 		if (nazwaFirmy != "" && nazwaFirmy != null) {
-			tekst = tekst + nazwaFirmy + "\n";
+			tekst = tekst + nazwaFirmy + " " + "\n";
 		}
 		if (imie != "" && imie != null && nazwisko != "" && nazwisko != null) {
-			tekst = tekst + imie + " " + nazwisko + "\n";
+			tekst = tekst + imie + " " + nazwisko + " " + "\n";
 		}
 		if (adres != "" && adres != null) {
 			String[] parts = adres.split(", ");
 			for (String s : parts) {
-				tekst = tekst + s + "\n";
+				tekst = tekst + s + " " + "\n";
 			}
 		}
 		if ((nip > 999999999l) && (nip < 10000000000l)) {

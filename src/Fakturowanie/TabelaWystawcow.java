@@ -1,6 +1,7 @@
 package Fakturowanie;
 
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 public class TabelaWystawcow extends JTable{
 	
@@ -33,6 +34,12 @@ public class TabelaWystawcow extends JTable{
 		super(data, nazwyKolumn);
 		this.setParameters();
 	}
+	
+	public TabelaWystawcow(DefaultTableModel deufaltTableModel) {
+		super(deufaltTableModel);
+		this.setParameters();
+	}
+
 
 	public static String[] getNazwyKolumn() {
 		return nazwyKolumn;

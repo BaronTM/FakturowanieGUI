@@ -1,6 +1,7 @@
 package Fakturowanie;
 
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 public class TabelaKlientow extends JTable {
 
@@ -31,6 +32,11 @@ public class TabelaKlientow extends JTable {
 
 	public TabelaKlientow(Object[][] data) {
 		super(data, nazwyKolumn);
+		this.setParameters();
+	}
+	
+	public TabelaKlientow(DefaultTableModel deufaltTableModel) {
+		super(deufaltTableModel);
 		this.setParameters();
 	}
 

@@ -14,6 +14,7 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -59,10 +60,6 @@ public class PanelProduktow extends JPanel{
 		tytul.setBounds(120, 20, 500, 40);
 		tytul.setHorizontalAlignment(SwingConstants.CENTER);
 		
-		// ---------------------------- TESTOWE
-		Object[][] data = {
-				{"1", "Budyń czekoladowy, paczka 100 szt.", 145505.43, "PLN", "SZT"}
-				};
 		
 		modelListyProduktow = new DefaultTableModel(TabelaProduktow.getNazwyKolumn(), 0);
 		lista = new TabelaProduktow(modelListyProduktow);
@@ -212,13 +209,20 @@ public class PanelProduktow extends JPanel{
 				nazwaTxt.setText("");
 				cenaTxt.setText("0.00");
 				jednostkaCB.setSelectedIndex(0);
-			});
-			
+			});			
 			dodaj.addActionListener(l -> {
 				String[] parts = cenaTxt.getText().split(",");
-				float part1 = Float.parseFloat(parts[0]);
-				float part2 = Float.parseFloat(parts[1]) / 100;
-				Historia.getProdukty().add(new Produkt(nazwaTxt.getText(), (part1 + part2), ((String) jednostkaCB.getSelectedItem())));
+				float cenaNowego = Float.parseFloat(parts[0]) + Float.parseFloat(parts[1]) / 100;
+				String nazwaNowego = (String) nazwaTxt.getText();
+				String jednostkaNowego = (String) jednostkaCB.getSelectedItem();
+				if ((cenaNowego < 0) || (nazwaNowego.equals("")) || jednostkaNowego.equals("")) {
+					JOptionPane.showMessageDialog(this,
+						    "Wprowadź wymagane dane.",
+						    "Błąd wprowadzania",
+						    JOptionPane.ERROR_MESSAGE);
+				} else {
+					Historia.getProdukty().add(new Produkt(nazwaNowego, cenaNowego, jednostkaNowego));
+				}
 				nazwaTxt.setText("");
 				cenaTxt.setText("0.00");
 				jednostkaCB.setSelectedIndex(0);
