@@ -2,7 +2,7 @@ package Fakturowanie;
 
 import java.io.Serializable;
 
-public class Pozycja implements Serializable{
+public class Pozycja implements Serializable, Cloneable{
 	
 	private Produkt produkt;
 	private int ilosc;
@@ -11,7 +11,7 @@ public class Pozycja implements Serializable{
 	private float kwotaBruttoPoz;
 	private float vatPoz;
 	private static final long serialVersionUID = 1755895988459484123L;
-	
+		
 	//------- KONSTRUKTORY
 	
 	public Pozycja(Produkt produkt) {
@@ -20,6 +20,12 @@ public class Pozycja implements Serializable{
 		rabat = 0;
 		vatPoz = Statyczne.getUstawienia().getVat();
 	}
+	
+	public Pozycja clone() throws CloneNotSupportedException {
+		Pozycja klon = (Pozycja) super.clone();
+    	klon.produkt = this.produkt.clone();
+    	return klon;
+    }
 
 	//------- GETTERY
 

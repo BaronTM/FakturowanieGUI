@@ -81,6 +81,18 @@ public class PanelNowejFaktury extends JPanel {
 		zaslona.setBounds(0, 0, 740, 680);
 		zaslona.setBackground(Color.BLACK);
 		zaslona.setVisible(false);
+		zaslona.addMouseListener(new MouseListener() {			
+			@Override
+			public void mouseReleased(MouseEvent e) {}
+			@Override
+			public void mousePressed(MouseEvent e) {}
+			@Override
+			public void mouseExited(MouseEvent e) {}
+			@Override
+			public void mouseEntered(MouseEvent e) {}
+			@Override
+			public void mouseClicked(MouseEvent e) {}
+		});
 
 		listaZakupow = new ArrayList<>();
 

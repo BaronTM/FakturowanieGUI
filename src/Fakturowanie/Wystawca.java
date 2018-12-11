@@ -2,7 +2,7 @@ package Fakturowanie;
 
 import java.io.Serializable;
 
-public class Wystawca implements Serializable{
+public class Wystawca implements Serializable, Cloneable{
 	
 	private String imie;
 	private String nazwisko;
@@ -10,7 +10,7 @@ public class Wystawca implements Serializable{
 	private long nip; // 10 cyfr
 	private String adres;
     private static final long serialVersionUID = 1755895955579636126L;
-
+    
 	public Wystawca(String imie, String nazwisko, String nazwaFirmy, long nip, String adres) {
 		this.imie = imie;
 		this.nazwisko = nazwisko;
@@ -36,6 +36,12 @@ public class Wystawca implements Serializable{
 		this.nazwaFirmy = nazwaFirmy;
 		this.nip = nip;
 	}
+	
+	public Wystawca clone() throws CloneNotSupportedException {
+    	Wystawca klon = (Wystawca) super.clone();   
+    	return klon;
+    }
+	
 	public void setImie(String imie) {
 		this.imie = imie;
 	}
@@ -126,5 +132,7 @@ public class Wystawca implements Serializable{
 					&& (Long.compare(nip, other.nip) == 0) && adres.equals(other.adres));
 		}
 	}
+	
+	
 
 }

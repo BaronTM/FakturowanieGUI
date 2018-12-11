@@ -3,6 +3,8 @@ package Fakturowanie;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.text.ParseException;
 
 import javax.swing.JButton;
@@ -49,6 +51,18 @@ public class PanelWystawcow extends JPanel{
 		zaslona.setBounds(0, 0, 740, 680);
 		zaslona.setBackground(Color.BLACK);
 		zaslona.setVisible(false);
+		zaslona.addMouseListener(new MouseListener() {			
+			@Override
+			public void mouseReleased(MouseEvent e) {}
+			@Override
+			public void mousePressed(MouseEvent e) {}
+			@Override
+			public void mouseExited(MouseEvent e) {}
+			@Override
+			public void mouseEntered(MouseEvent e) {}
+			@Override
+			public void mouseClicked(MouseEvent e) {}
+		});
 		
 		tytul = new JLabel("WYSTAWCY");
 		tytul.setFont(new Font("TimesRoman", Font.BOLD, 30));

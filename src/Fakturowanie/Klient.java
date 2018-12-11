@@ -2,7 +2,7 @@ package Fakturowanie;
 
 import java.io.Serializable;
 
-public class Klient implements Serializable{
+public class Klient implements Serializable, Cloneable{
 
 	private String imie;
 	private String nazwisko;
@@ -36,6 +36,12 @@ public class Klient implements Serializable{
 		this.nazwaFirmy = nazwaFirmy;
 		this.nip = nip;
 	}
+	
+	public Klient clone() throws CloneNotSupportedException {
+    	Klient klon = (Klient) super.clone();   
+    	return klon;
+    }
+	
 	public void setImie(String imie) {
 		this.imie = imie;
 	}

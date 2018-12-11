@@ -19,7 +19,7 @@ public class Fakturka implements Serializable{
 	private boolean uwzgledniona;
 	private static String[] dostepneFormyPlatnosci = {"GOTÓWKA", "KARTA"};
     private static final long serialVersionUID = 1755895988989484123L;
-	
+    
 	//------- KONSTRUKTORY
 	
 	public Fakturka() {
@@ -47,8 +47,8 @@ public class Fakturka implements Serializable{
 		return cenaKoncowaBrutto;
 	}
 	
-	public Pozycja[] getListaProduktow() {
-		return ((Pozycja[]) listaProduktow.toArray());
+	public ArrayList<Pozycja> getListaProduktow() {
+		return listaProduktow;
 	}
 	
 	public Date getDataWystawienia() {
