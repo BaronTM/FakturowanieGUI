@@ -32,6 +32,7 @@ public class PanelKlientow extends JPanel {
 	private JPanel panelPodListeFaktur;
 	private JPanel zaslona;
 	private JButton nowyKlient;
+	private JButton usunKlienta;
 	private RamkaDodawaniaKlienta ramkaDodawania;
 	private JLayeredPane layeredPane;
 	private DefaultTableModel modelListyKlientow;
@@ -55,7 +56,13 @@ public class PanelKlientow extends JPanel {
 		tytul.setBounds(120, 20, 500, 40);
 		tytul.setHorizontalAlignment(SwingConstants.CENTER);
 
-		modelListyKlientow = new DefaultTableModel(TabelaKlientow.getNazwyKolumn(), 0);
+		modelListyKlientow = new DefaultTableModel(TabelaKlientow.getNazwyKolumn(), 0) {
+			@Override
+			public boolean isCellEditable(int row, int column)
+			{
+				return false;
+			}
+		};
 		lista = new TabelaKlientow(modelListyKlientow);
 		listaScroll = new JScrollPane(lista);
 		listaScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -85,6 +92,8 @@ public class PanelKlientow extends JPanel {
 
 		nowyKlient = new JButton("NOWY KLIENT");
 		nowyKlient.setBounds(550, 330, 150, 30);
+		usunKlienta = new JButton("USUN KLIENTA");
+		usunKlienta.setBounds(400, 330, 150, 30);
 
 		// ------- panel dodawania
 		ramkaDodawania = new RamkaDodawaniaKlienta("Dodawanie Nowego Klienta");
@@ -95,6 +104,25 @@ public class PanelKlientow extends JPanel {
 			zaslona.setVisible(true);
 
 		});
+		usunKlienta.addActionListener(l -> {
+			int sel = lista.getSelectedRow();
+			if (sel == -1) {
+				JOptionPane.showMessageDialog(this, "Nie wybrano klienta.", "Błąd", JOptionPane.ERROR_MESSAGE);
+			} else {
+				if (JOptionPane.showOptionDialog(this, "Czy na pewno chcesz usunąć tego klienta?", "Usuwanie",
+						JOptionPane.YES_NO_OPTION, 
+					    JOptionPane.QUESTION_MESSAGE,
+					    null, new Object[] {"Tak", "Nie"}, "Tak") == 0) {
+					for (Klient k : Statyczne.getHistoria().getKlienci()) {
+						if (k.toString().equals(lista.getValueAt(sel, 1).toString())) {
+							Statyczne.getHistoria().getKlienci().remove(k);
+							odswiezListy();
+							break;
+						}
+					}
+				}
+			}
+		});
 
 		this.add(layeredPane);
 		layeredPane.add(tytul, JLayeredPane.DEFAULT_LAYER);
@@ -102,6 +130,7 @@ public class PanelKlientow extends JPanel {
 		layeredPane.add(fakturyLab, JLayeredPane.DEFAULT_LAYER);
 		layeredPane.add(panelPodListeFaktur, JLayeredPane.DEFAULT_LAYER);
 		layeredPane.add(nowyKlient, JLayeredPane.DEFAULT_LAYER);
+		layeredPane.add(usunKlienta, JLayeredPane.DEFAULT_LAYER);
 		layeredPane.add(zaslona, JLayeredPane.PALETTE_LAYER);
 		layeredPane.add(ramkaDodawania, JLayeredPane.MODAL_LAYER);
 

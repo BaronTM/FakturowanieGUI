@@ -37,6 +37,7 @@ public class PanelProduktow extends JPanel{
 	private JPanel panelPodListeFaktur;
 	private JPanel zaslona;
 	private JButton nowyProdukt;
+	private JButton usunProdukt;
 	private JLayeredPane layeredPane;
 	private RamkaDodawaniaProduktow ramkaDodawania;
 	private DefaultTableModel modelListyProduktow;
@@ -61,7 +62,13 @@ public class PanelProduktow extends JPanel{
 		tytul.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		
-		modelListyProduktow = new DefaultTableModel(TabelaProduktow.getNazwyKolumn(), 0);
+		modelListyProduktow = new DefaultTableModel(TabelaProduktow.getNazwyKolumn(), 0) {
+			@Override
+			public boolean isCellEditable(int row, int column)
+			{
+				return false;
+			}
+		};
 		lista = new TabelaProduktow(modelListyProduktow);
 		listaScroll = new JScrollPane(lista);
 		listaScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -94,6 +101,8 @@ public class PanelProduktow extends JPanel{
 		
 		nowyProdukt = new JButton("NOWY PRODUKT");
 		nowyProdukt.setBounds(520, 70, 180, 30);
+		usunProdukt = new JButton("USUN PRODUKT");
+		usunProdukt.setBounds(520, 100, 180, 30);
 		
 		// ------- panel dodawania
 		ramkaDodawania = new RamkaDodawaniaProduktow("Dodawanie Nowego Produktu");
@@ -103,6 +112,25 @@ public class PanelProduktow extends JPanel{
 			ramkaDodawania.setVisible(true);
 			zaslona.setVisible(true);
 		});
+		usunProdukt.addActionListener(l -> {
+			int sel = lista.getSelectedRow();
+			if (sel == -1) {
+				JOptionPane.showMessageDialog(this, "Nie wybrano produktu.", "Błąd", JOptionPane.ERROR_MESSAGE);
+			} else {
+				if (JOptionPane.showOptionDialog(this, "Czy na pewno chcesz usunąć ten produkt?", "Usuwanie",
+						JOptionPane.YES_NO_OPTION, 
+					    JOptionPane.QUESTION_MESSAGE,
+					    null, new Object[] {"Tak", "Nie"}, "Tak") == 0) {
+					for (Produkt k : Statyczne.getHistoria().getProdukty()) {
+						if (k.getNazwa().equals(lista.getValueAt(sel, 1).toString())) {
+							Statyczne.getHistoria().getProdukty().remove(k);
+							odswiezListy();
+							break;
+						}
+					}
+				}
+			}
+		});
 		
 		this.add(layeredPane);
 		layeredPane.add(tytul, JLayeredPane.DEFAULT_LAYER);
@@ -110,6 +138,7 @@ public class PanelProduktow extends JPanel{
 		layeredPane.add(fakturyLab, JLayeredPane.DEFAULT_LAYER);
 		layeredPane.add(panelPodListeFaktur, JLayeredPane.DEFAULT_LAYER);
 		layeredPane.add(nowyProdukt, JLayeredPane.DEFAULT_LAYER);
+		layeredPane.add(usunProdukt, JLayeredPane.DEFAULT_LAYER);
 		layeredPane.add(zaslona, JLayeredPane.PALETTE_LAYER);
 		layeredPane.add(ramkaDodawania, JLayeredPane.MODAL_LAYER);
 	}

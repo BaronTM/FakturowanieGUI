@@ -31,6 +31,7 @@ public class PanelWystawcow extends JPanel{
 	private JPanel panelPodListeFaktur;
 	private JPanel zaslona;
 	private JButton nowyWystawca;
+	private JButton usunWystawce;
 	private JLayeredPane layeredPane;
 	private RamkaDodawaniaWystawcy ramkaDodawania;
 	private DefaultTableModel modelListyWystawcow;
@@ -54,7 +55,13 @@ public class PanelWystawcow extends JPanel{
 		tytul.setBounds(120, 20, 500, 40);
 		tytul.setHorizontalAlignment(SwingConstants.CENTER);
 		
-		modelListyWystawcow = new DefaultTableModel(TabelaWystawcow.getNazwyKolumn(), 0);
+		modelListyWystawcow = new DefaultTableModel(TabelaWystawcow.getNazwyKolumn(), 0) {
+			@Override
+			public boolean isCellEditable(int row, int column)
+			{
+				return false;
+			}
+		};
 		lista = new TabelaWystawcow(modelListyWystawcow);
 		listaScroll = new JScrollPane(lista);
 		listaScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -87,6 +94,8 @@ public class PanelWystawcow extends JPanel{
 		
 		nowyWystawca = new JButton("NOWY WYSTAWCA");
 		nowyWystawca.setBounds(520, 330, 180, 30);
+		usunWystawce = new JButton("USUN WYSTAWCE");
+		usunWystawce.setBounds(370, 330, 150, 30);
 		
 		// ------- panel dodawania
 		ramkaDodawania = new RamkaDodawaniaWystawcy("Dodawanie Nowego Wystawcy");
@@ -94,8 +103,29 @@ public class PanelWystawcow extends JPanel{
 		// ------- Listenery
 		nowyWystawca.addActionListener(l -> {
 			ramkaDodawania.setVisible(true);
-			zaslona.setVisible(true);
-			
+			zaslona.setVisible(true);			
+		});
+		usunWystawce.addActionListener(l -> {
+			int sel = lista.getSelectedRow();
+			if (sel == -1) {
+				JOptionPane.showMessageDialog(this, "Nie wybrano wystawcy.", "Błąd", JOptionPane.ERROR_MESSAGE);
+			} else {
+				if (JOptionPane.showOptionDialog(this, "Czy na pewno chcesz usunąć tego wystawcę?", "Usuwanie",
+						JOptionPane.YES_NO_OPTION, 
+					    JOptionPane.QUESTION_MESSAGE,
+					    null, new Object[] {"Tak", "Nie"}, "Tak") == 0) {
+					for (Wystawca k : Statyczne.getHistoria().getWystrawcy()) {
+						if (k.toString().equals(lista.getValueAt(sel, 1).toString())) {
+							Statyczne.getHistoria().getWystrawcy().remove(k);
+							odswiezListy();
+							if (k.equals(Statyczne.getUstawienia().getDomyslnyWystawca())) {
+								Statyczne.getUstawienia().setDomyslnyWystawca(null);
+							}
+							break;
+						}
+					}
+				}
+			}
 		});
 		
 		this.add(layeredPane);
@@ -104,6 +134,7 @@ public class PanelWystawcow extends JPanel{
 		layeredPane.add(fakturyLab, JLayeredPane.DEFAULT_LAYER);
 		layeredPane.add(panelPodListeFaktur, JLayeredPane.DEFAULT_LAYER);
 		layeredPane.add(nowyWystawca, JLayeredPane.DEFAULT_LAYER);
+		layeredPane.add(usunWystawce, JLayeredPane.DEFAULT_LAYER);
 		layeredPane.add(zaslona, JLayeredPane.PALETTE_LAYER);
 		layeredPane.add(ramkaDodawania, JLayeredPane.MODAL_LAYER);				
 	}
