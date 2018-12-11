@@ -15,6 +15,8 @@ public class Aplikacja {
 	private static PanelWystawcow panelWystawcow;
 	private static PanelProduktow panelProduktow;
 	private static PanelLimit panelLimit;
+	private static PanelPodgladu panelPodgladu;
+	private static JLayeredPane layeredPane;
 	private static Aplikacja aplikacja = new Aplikacja();
 	
 	public static void main(String[] args) {
@@ -29,6 +31,9 @@ public class Aplikacja {
 		ramka.setSize(1000, 700);
 		ramka.getContentPane().setLayout(null);
 		
+		layeredPane = new JLayeredPane();
+		layeredPane.setBounds(0, 0, 1000, 700);
+		
 		Statyczne.wczytajHistorie();
 		
 		panelMenu = new PanelMenu();
@@ -40,6 +45,7 @@ public class Aplikacja {
 		panelWystawcow = new PanelWystawcow();
 		panelProduktow = new PanelProduktow();
 		panelLimit = new PanelLimit();
+		panelPodgladu = new PanelPodgladu();
 		
 		panelMenu.setVisible(true);
 		panelFunkcyjny.setVisible(true);
@@ -50,16 +56,20 @@ public class Aplikacja {
 		panelWystawcow.setVisible(false);
 		panelProduktow.setVisible(false);
 		panelLimit.setVisible(false);
+		panelPodgladu.setVisible(false);
 		
-		ramka.getContentPane().add(panelMenu);
-		ramka.getContentPane().add(panelFunkcyjny);
-		ramka.getContentPane().add(panelNowejFaktury);	
-		ramka.getContentPane().add(panelUstawien);
-		ramka.getContentPane().add(panelPrzegladFaktur);
-		ramka.getContentPane().add(panelKlientow);
-		ramka.getContentPane().add(panelWystawcow);
-		ramka.getContentPane().add(panelProduktow);
-		ramka.getContentPane().add(panelLimit);
+		ramka.getContentPane().add(layeredPane);
+		
+		layeredPane.add(panelMenu, JLayeredPane.DEFAULT_LAYER);
+		layeredPane.add(panelFunkcyjny, JLayeredPane.DEFAULT_LAYER);
+		layeredPane.add(panelNowejFaktury, JLayeredPane.DEFAULT_LAYER);	
+		layeredPane.add(panelUstawien, JLayeredPane.DEFAULT_LAYER);
+		layeredPane.add(panelPrzegladFaktur, JLayeredPane.DEFAULT_LAYER);
+		layeredPane.add(panelKlientow, JLayeredPane.DEFAULT_LAYER);
+		layeredPane.add(panelWystawcow, JLayeredPane.DEFAULT_LAYER);
+		layeredPane.add(panelProduktow, JLayeredPane.DEFAULT_LAYER);
+		layeredPane.add(panelLimit, JLayeredPane.DEFAULT_LAYER);
+		layeredPane.add(panelPodgladu, JLayeredPane.PALETTE_LAYER);
 		
 		ramka.setResizable(false);
 		ramka.setLocationRelativeTo(null);
@@ -104,6 +114,10 @@ public class Aplikacja {
 	
 	public static PanelLimit getPanelLimit() {
 		return panelLimit;
+	}
+	
+	public static PanelPodgladu getPanelPodgladu() {
+		return panelPodgladu;
 	}
 	
 	public static Aplikacja getAplikacja() {
