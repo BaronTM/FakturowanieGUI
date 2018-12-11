@@ -8,6 +8,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -40,7 +41,6 @@ public class PanelNowejFaktury extends JPanel {
 	private JButton usunProdukt;
 	private JButton edytujPozycje;
 	private JButton zapiszFakture;
-	private JButton zamknijFakture;
 	private JButton wybierzKlienta;
 	private JButton wybierzWystawce;
 	private JPanel panelPodEtykiety;
@@ -63,6 +63,10 @@ public class PanelNowejFaktury extends JPanel {
 	private RamkaEdycjaPozycji ramkaEdycjaPozycji;
 	private DefaultTableModel modelListyZakupow;
 	private ArrayList<Pozycja> listaZakupow;
+	private Wystawca wystawca;
+	private Klient klient;
+	private float kwNet;
+	private float kwBrut;
 
 	public PanelNowejFaktury() {
 		super();
@@ -121,15 +125,15 @@ public class PanelNowejFaktury extends JPanel {
 
 		dodajProdukt = new JButton("Dodaj produkt");
 		dodajProdukt.setFont(new Font("TimesRoman", Font.BOLD, 15));
-		dodajProdukt.setBounds(550, 260, 150, 30);
+		dodajProdukt.setBounds(520, 260, 180, 30);
 
 		usunProdukt = new JButton("Usun produkt");
 		usunProdukt.setFont(dodajProdukt.getFont());
-		usunProdukt.setBounds(400, 260, 150, 30);
+		usunProdukt.setBounds(370, 260, 150, 30);
 		
 		edytujPozycje = new JButton("Edytuj pozycję");
 		edytujPozycje.setFont(dodajProdukt.getFont());
-		edytujPozycje.setBounds(40, 510, 150, 30);
+		edytujPozycje.setBounds(40, 510, 180, 30);
 
 		wybierzKlienta = new JButton("Wybierz Klienta");
 		wybierzKlienta.setFont(dodajProdukt.getFont());
@@ -142,6 +146,7 @@ public class PanelNowejFaktury extends JPanel {
 		uwzgledniona = new JCheckBox("Faktura uwzględniona w limicie");
 		uwzgledniona.setFont(dodajProdukt.getFont());
 		uwzgledniona.setBounds(50, 260, 300, 30);
+		uwzgledniona.setSelected(true);
 
 		modelListyZakupow = new DefaultTableModel(TabelaZakupow.getNazwyKolumn(), 0) {
 			@Override
@@ -158,7 +163,8 @@ public class PanelNowejFaktury extends JPanel {
 		kwota = new JTextArea();
 		kwota.setFont(new Font("TimesRoman", Font.BOLD, 15));
 		kwota.setEditable(false);
-		kwota.setText("Łączna kwonta netto: " + "\n" + "Łączna kwonta brutto: ");
+		kwota.setText(String.format("Łączna kwonta netto: %.2f " + Statyczne.getUstawienia().getWaluta(), kwNet) + "\n" + 
+		String.format("Łączna kwonta brutto: %.2f " + Statyczne.getUstawienia().getWaluta(), kwBrut));
 
 		panelKwot = new JPanel();
 		panelKwot.setLayout(new BorderLayout());
@@ -181,14 +187,10 @@ public class PanelNowejFaktury extends JPanel {
 		zapiszFakture = new JButton("Zapisz Fakture");
 		zapiszFakture.setFont(new Font("TimesRoman", Font.BOLD, 15));
 		zapiszFakture.setSize(180, 30);
-		zamknijFakture = new JButton("Zamknij Fakture");
-		zamknijFakture.setFont(new Font("TimesRoman", Font.BOLD, 15));
-		zamknijFakture.setSize(180, 30);
 
 		panelPrzyciskowDolnych = new JPanel();
 		panelPrzyciskowDolnych.setLayout(new BorderLayout());
 		panelPrzyciskowDolnych.add(zapiszFakture, BorderLayout.NORTH);
-		panelPrzyciskowDolnych.add(zamknijFakture, BorderLayout.SOUTH);
 
 		panelPodsumowania = new JPanel();
 		panelPodsumowania.setLayout(new BorderLayout());
@@ -250,6 +252,10 @@ public class PanelNowejFaktury extends JPanel {
 				}		
 			}
 		});
+		zapiszFakture.addActionListener(l -> {
+			zapiszFakture();
+		});
+		
 
 		this.add(layeredPane);
 		layeredPane.add(tytul, JLayeredPane.DEFAULT_LAYER);
@@ -272,20 +278,72 @@ public class PanelNowejFaktury extends JPanel {
 	}
 
 	private void uzupelnijEtykieteWystawcy(Wystawca wystawca) {
-		etykietaWystawcy.setText(wystawca.toString());
+		if (wystawca == null) {
+			etykietaWystawcy.setText("");
+		} else {
+			etykietaWystawcy.setText(wystawca.toString());
+		}
+		this.wystawca = wystawca;
 	}
 
 	private void uzupelnijEtykieteKlienta(Klient klient) {
-		etykietaKlienta.setText(klient.toString());
+		if (klient == null) {
+			etykietaKlienta.setText("");
+		} else {
+			etykietaKlienta.setText(klient.toString());
+		}
+		this.klient = klient;
+	}
+	
+	private void zapiszFakture() {
+		if ((klient == null) || (wystawca == null) || (modelListyZakupow.getRowCount() == 0)) {
+			JOptionPane.showMessageDialog(this, "Nie wszytkie elementy zostały uzupełnione.", "Błąd", JOptionPane.ERROR_MESSAGE);
+		} else {
+			Fakturka nowa = new Fakturka();
+			nowa.setWystawca(wystawca);
+			nowa.setKlient(klient);
+			nowa.setListaProduktow(listaZakupow);
+			nowa.setDataWystawienia(new Date());
+			nowa.setZamknieta(false);
+			nowa.setFormaPlatnosci((String) formaPlatnosciCB.getSelectedItem());
+			nowa.setNrFaktury();
+			nowa.setUwzgledniona(uwzgledniona.isSelected());
+			if (JOptionPane.showOptionDialog(this, "Czy chcesz zamknąć fakturę?\n"
+					+ "Zamknięta faktura nie może być edytowana.", "Usuwanie",
+					JOptionPane.YES_NO_OPTION, 
+				    JOptionPane.QUESTION_MESSAGE,
+				    null, new Object[] {"Tak", "Nie"}, "Tak") == 0) {
+				nowa.setZamknieta(true);
+			}
+			nowa.obliczKwotyKoncowej();
+			Statyczne.getHistoria().getFaktury().add(nowa);
+			Statyczne.getUstawienia().zapiszUstawienia();
+			Statyczne.getHistoria().zapiszHistorie();
+			wyczysc();
+		}
+	}
+	
+	
+	public void wyczysc() {
+		uzupelnijEtykieteKlienta(null);
+		uzupelnijEtykieteWystawcy(null);
+		listaZakupow.clear();
+		odswiezListeZakupow();
+		formaPlatnosciCB.setSelectedIndex(0);
+		uwzgledniona.setSelected(true);
 	}
 
 	public void odswiezListeZakupow() {
 		for (int k = modelListyZakupow.getRowCount(); k > 0; k--) {
 			modelListyZakupow.removeRow(0);
 		}
+		kwNet = 0;
+		kwBrut = 0;
 		int i = 0;
 		for (Pozycja p : listaZakupow) {
 			p.oblicz();
+			kwNet += p.getKwotaNettoPoz();
+			kwBrut += p.getKwotaBruttoPoz();
 			Object[] element = new Object[9];
 			element[0] = i + 1;
 			element[1] = p.getProdukt().getNazwa();
@@ -299,6 +357,8 @@ public class PanelNowejFaktury extends JPanel {
 			modelListyZakupow.addRow(element);
 			i++;
 		}
+		kwota.setText(String.format("Łączna kwonta netto: %.2f " + Statyczne.getUstawienia().getWaluta(), kwNet) + "\n" + 
+		String.format("Łączna kwonta brutto: %.2f " + Statyczne.getUstawienia().getWaluta(), kwBrut));
 	}
 
 	private class RamkaDodawaniaKlienta extends JInternalFrame {
@@ -547,6 +607,8 @@ public class PanelNowejFaktury extends JPanel {
 							if (p.getNazwa().equals(listaProduktow.getValueAt(sel, 1).toString())) {
 								listaZakupow.add(new Pozycja(p));
 								odswiezListeZakupow();
+								this.setVisible(false);
+								zaslona.setVisible(false);
 								break;
 							}
 						}

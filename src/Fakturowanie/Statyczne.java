@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 
-import sun.usagetracker.UsageTrackerClient;
 
 public class Statyczne {
 	

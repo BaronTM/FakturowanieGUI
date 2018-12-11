@@ -274,6 +274,8 @@ public class PanelProduktow extends JPanel{
 						jednostkaCB.setSelectedIndex(0);
 						odswiezListy();
 						Statyczne.getHistoria().zapiszHistorie();
+						this.setVisible(false);
+						zaslona.setVisible(false);
 					}
 				}				
 			});

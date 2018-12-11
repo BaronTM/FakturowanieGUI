@@ -92,7 +92,7 @@ public class PanelKlientow extends JPanel {
 
 		nowyKlient = new JButton("NOWY KLIENT");
 		nowyKlient.setBounds(550, 330, 150, 30);
-		usunKlienta = new JButton("USUN KLIENTA");
+		usunKlienta = new JButton("USUŃ KLIENTA");
 		usunKlienta.setBounds(400, 330, 150, 30);
 
 		// ------- panel dodawania
@@ -102,7 +102,6 @@ public class PanelKlientow extends JPanel {
 		nowyKlient.addActionListener(l -> {
 			ramkaDodawania.setVisible(true);
 			zaslona.setVisible(true);
-
 		});
 		usunKlienta.addActionListener(l -> {
 			int sel = lista.getSelectedRow();
@@ -116,6 +115,7 @@ public class PanelKlientow extends JPanel {
 					for (Klient k : Statyczne.getHistoria().getKlienci()) {
 						if (k.toString().equals(lista.getValueAt(sel, 1).toString())) {
 							Statyczne.getHistoria().getKlienci().remove(k);
+							Statyczne.getHistoria().zapiszHistorie();
 							odswiezListy();
 							break;
 						}
@@ -298,6 +298,8 @@ public class PanelKlientow extends JPanel {
 							adresTxt.setText("");
 							odswiezListy();
 							Statyczne.getHistoria().zapiszHistorie();
+							this.setVisible(false);
+							zaslona.setVisible(false);
 						}
 					}
 				}

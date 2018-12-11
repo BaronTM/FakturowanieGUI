@@ -1,6 +1,8 @@
 package Fakturowanie;
 
-public class Pozycja {
+import java.io.Serializable;
+
+public class Pozycja implements Serializable{
 	
 	private Produkt produkt;
 	private int ilosc;
@@ -8,6 +10,7 @@ public class Pozycja {
 	private float kwotaNettoPoz;
 	private float kwotaBruttoPoz;
 	private float vatPoz;
+	private static final long serialVersionUID = 1755895988459484123L;
 	
 	//------- KONSTRUKTORY
 	

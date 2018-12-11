@@ -94,8 +94,8 @@ public class PanelWystawcow extends JPanel{
 		
 		nowyWystawca = new JButton("NOWY WYSTAWCA");
 		nowyWystawca.setBounds(520, 330, 180, 30);
-		usunWystawce = new JButton("USUN WYSTAWCE");
-		usunWystawce.setBounds(370, 330, 150, 30);
+		usunWystawce = new JButton("USUŃ WYSTAWCĘ");
+		usunWystawce.setBounds(340, 330, 180, 30);
 		
 		// ------- panel dodawania
 		ramkaDodawania = new RamkaDodawaniaWystawcy("Dodawanie Nowego Wystawcy");
@@ -302,6 +302,8 @@ public class PanelWystawcow extends JPanel{
 							adresTxt.setText("");
 							odswiezListy();
 							Statyczne.getHistoria().zapiszHistorie();
+							this.setVisible(false);
+							zaslona.setVisible(false);
 						}
 					}
 				}

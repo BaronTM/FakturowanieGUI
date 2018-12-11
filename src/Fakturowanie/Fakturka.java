@@ -8,7 +8,6 @@ public class Fakturka implements Serializable{
 
 	private Wystawca wystawca;
 	private Klient klient;
-	private float vatNaFakturze;
 	private float cenaKoncowaNetto;
 	private float cenaKoncowaBrutto;
 	private ArrayList<Pozycja> listaProduktow;
@@ -25,7 +24,6 @@ public class Fakturka implements Serializable{
 	
 	public Fakturka() {
 		this.wystawca = Statyczne.getUstawienia().getDomyslnyWystawca();
-		this.vatNaFakturze = Statyczne.getUstawienia().getVat();
 		this.listaProduktow = new ArrayList<>();
 		this.zamknieta = false;
 		this.uwzgledniona = true;
@@ -39,10 +37,6 @@ public class Fakturka implements Serializable{
 	
 	public Klient getKlient() {
 		return klient;
-	}
-	
-	public float getVatNaFakturze() {
-		return vatNaFakturze;
 	}
 	
 	public float getCenaKoncowaNetto() {
@@ -95,12 +89,13 @@ public class Fakturka implements Serializable{
 		this.klient = klient;
 	}
 	
-	public void setVatNaFakturze(float vatNaFakturze) {
-		this.vatNaFakturze = vatNaFakturze;
+	public void setListaProduktow(ArrayList<Pozycja> listaProduktow) {
+		this.listaProduktow = listaProduktow;
 	}
 	
 	public void setDataWystawienia(Date dataWystawienia) {
 		this.dataWystawienia = dataWystawienia;
+		terminPlatnosci = new Date(dataWystawienia.getTime() + 2592000000l);
 	}
 	
 	public void setZamknieta(boolean zamknieta) {

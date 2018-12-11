@@ -15,7 +15,7 @@ public class Historia implements Serializable{
 	private ArrayList<Klient> klienci = new ArrayList<>();
 	private ArrayList<Wystawca> wystawcy = new ArrayList<>();
 	private ArrayList<Produkt> produkty = new ArrayList<>();
-    private static final long serialVersionUID = 1755895988989489999L;
+    private static final long serialVersionUID = 1755895988989489971L;
 	
 	public Historia() {
 		faktury = new ArrayList<>();
