@@ -11,17 +11,17 @@ import java.util.ArrayList;
 
 public class Historia implements Serializable{
 
-	private ArrayList<Fakturka> faktury = new ArrayList<>();
-	private ArrayList<Klient> klienci = new ArrayList<>();
-	private ArrayList<Wystawca> wystawcy = new ArrayList<>();
-	private ArrayList<Produkt> produkty = new ArrayList<>();
+	private ArrayList<Fakturka> faktury = new ArrayList<Fakturka>();
+	private ArrayList<Klient> klienci = new ArrayList<Klient>();
+	private ArrayList<Wystawca> wystawcy = new ArrayList<Wystawca>();
+	private ArrayList<Produkt> produkty = new ArrayList<Produkt>();
     private static final long serialVersionUID = 1755895988989489971L;
 	
 	public Historia() {
-		faktury = new ArrayList<>();
-		klienci = new ArrayList<>();
-		wystawcy = new ArrayList<>();
-		produkty = new ArrayList<>();
+		faktury = new ArrayList<Fakturka>();
+		klienci = new ArrayList<Klient>();
+		wystawcy = new ArrayList<Wystawca>();
+		produkty = new ArrayList<Produkt>();
 	}
 		
 	public ArrayList<Fakturka> getFaktury() {

@@ -24,6 +24,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
+import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
@@ -127,7 +128,7 @@ public class PanelPodgladu extends JPanel {
 			}
 		});
 
-		listaZakupow = new ArrayList<>();
+		listaZakupow = new ArrayList<Pozycja>();
 
 		tytul = new JLabel("PODGLAD FAKTURY");
 		tytul.setFont(new Font("TimesRoman", Font.BOLD, 30));
@@ -208,6 +209,7 @@ public class PanelPodgladu extends JPanel {
 		listaScroll = new JScrollPane(lista);
 		listaScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		listaScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		lista.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 		kwota = new JTextArea();
 		kwota.setFont(new Font("TimesRoman", Font.BOLD, 15));
@@ -361,7 +363,7 @@ public class PanelPodgladu extends JPanel {
 	private void zapiszFakture() {
 		try {
 			if (fakturka.isZamknieta()) {
-				fakturka.setZamknieta(uwzgledniona.isSelected());
+				fakturka.setUwzgledniona(uwzgledniona.isSelected());
 			} else {
 				if ((klient == null) || (wystawca == null) || (modelListyZakupow.getRowCount() == 0)) {
 					JOptionPane.showMessageDialog(this, "Nie wszytkie elementy zostały uzupełnione.", "Błąd",
@@ -399,7 +401,6 @@ public class PanelPodgladu extends JPanel {
 		uzupelnijEtykieteKlienta(fakturka.getKlient());
 		uzupelnijEtykieteWystawcy(fakturka.getWystawca());
 		uwzgledniona.setSelected(fakturka.isUwzgledniona());
-		listaZakupow = new ArrayList<>();
 		try {
 			for (Pozycja po : fakturka.getListaProduktow()) {
 				listaZakupow.add(po.clone());
@@ -431,7 +432,7 @@ public class PanelPodgladu extends JPanel {
 	public void wyczysc() {
 		uzupelnijEtykieteKlienta(null);
 		uzupelnijEtykieteWystawcy(null);
-		listaZakupow.clear();
+		listaZakupow = new ArrayList<Pozycja>();
 		odswiezListeZakupow();
 		formaPlatnosciCB.setSelectedIndex(0);
 		uwzgledniona.setSelected(true);
@@ -493,6 +494,7 @@ public class PanelPodgladu extends JPanel {
 			listaScrollKlientow = new JScrollPane(listaKlientow);
 			listaScrollKlientow.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 			listaScrollKlientow.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+			listaKlientow.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 			panelPodListeKlientow = new JPanel();
 			panelPodListeKlientow.setLayout(new BorderLayout());
@@ -580,7 +582,8 @@ public class PanelPodgladu extends JPanel {
 			listaScrollWystawcow = new JScrollPane(listaWystawcow);
 			listaScrollWystawcow.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 			listaScrollWystawcow.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-
+			listaWystawcow.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			
 			panelPodListeWystawcow = new JPanel();
 			panelPodListeWystawcow.setLayout(new BorderLayout());
 			panelPodListeWystawcow.add(listaScrollWystawcow, BorderLayout.CENTER);
@@ -668,7 +671,8 @@ public class PanelPodgladu extends JPanel {
 			listaScrollProduktow = new JScrollPane(listaProduktow);
 			listaScrollProduktow.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 			listaScrollProduktow.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-
+			listaProduktow.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			
 			panelPodListeProduktow = new JPanel();
 			panelPodListeProduktow.setLayout(new BorderLayout());
 			panelPodListeProduktow.add(listaScrollProduktow, BorderLayout.CENTER);

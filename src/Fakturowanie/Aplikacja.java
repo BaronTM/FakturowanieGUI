@@ -35,6 +35,7 @@ public class Aplikacja {
 		layeredPane.setBounds(0, 0, 1000, 700);
 		
 		Statyczne.wczytajHistorie();
+		Statyczne.wczytajUstawienia();
 		
 		panelMenu = new PanelMenu();
 		panelFunkcyjny = new PanelFunkcyjny();

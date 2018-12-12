@@ -18,13 +18,16 @@ import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFormattedTextField.AbstractFormatter;
 import javax.swing.JFormattedTextField.AbstractFormatterFactory;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.text.DateFormatter;
@@ -54,9 +57,11 @@ public class PanelLimit extends JPanel{
 	private JPanel panelAutomatyczny;
 	private JPanel panelPodListeFaktur;
 	private JButton zastosuj;
+	private JButton podgladFaktury;
 	private TabelaFaktur listaFaktur;
 	private JScrollPane listaFakturScroll;
 	private JComboBox<String> limitNetBrut;
+	private DefaultTableModel modelListyFaktur;
 	
 	public PanelLimit () {
 		super();
@@ -80,6 +85,7 @@ public class PanelLimit extends JPanel{
 		
 		wlacznik = new SwitchBox("ON", "OFF");
 		wlacznik.setBounds(400, 100, 130, 30);
+		wlacznik.setSelected(true);
 		
 		trybAutomatyczny = new JRadioButton("Tryb automatyczny");
 		trybAutomatyczny.setFont(new Font("TimesRoman", Font.CENTER_BASELINE, 15));
@@ -99,7 +105,7 @@ public class PanelLimit extends JPanel{
 		
 		panelParametrow = new JPanel();
 		panelParametrow.setLayout(null);
-		panelParametrow.setBounds(0, 230, 740, 350);
+		panelParametrow.setBounds(0, 230, 740, 370);
 		panelParametrow.setBackground(Color.MAGENTA);
 		panelParametrow.setVisible(true);
 		
@@ -165,16 +171,21 @@ public class PanelLimit extends JPanel{
 		dataTxt.setText("07-12-2018");
 		
 		//------- lista
-		// ---------------------------- TESTOWE
-		Object[][] data2 = {
-				{"1", "9146/2018", "24.11.2018", 145505.43, 214012.99, "PLN", true, 
-					false, "check"}
+		modelListyFaktur = new DefaultTableModel(TabelaFaktur.getNazwyKolumn(), 0) {
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
 		};
-
-		listaFaktur = new TabelaFaktur(data2, TabelaFaktur.getNazwyKolumn());
+		listaFaktur = new TabelaFaktur(modelListyFaktur);
 		listaFakturScroll = new JScrollPane(listaFaktur);
 		listaFakturScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		listaFakturScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		listaFaktur.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		
+		podgladFaktury = new JButton("PODGLAD FAKTURY");
+		podgladFaktury.setBounds(475, 330, 225, 30);
+
 
 		panelPodListeFaktur = new JPanel();
 		panelPodListeFaktur.setLayout(new BorderLayout());
@@ -207,13 +218,14 @@ public class PanelLimit extends JPanel{
 		panelParametrow.add(kwotaLab);
 		panelParametrow.add(kwotaTxt);
 		panelParametrow.add(panelPodListeFaktur);
+		panelParametrow.add(podgladFaktury);
 		panelParametrow.add(limitNetBrut);
 		
 		//------- listenery
 		wlacznik.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				if (!wlacznik.isSelected()) {
+				if (wlacznik.isSelected()) {
 					trybLab.setVisible(false);
 					trybReczny.setVisible(false);
 					trybAutomatyczny.setVisible(false);
@@ -226,6 +238,22 @@ public class PanelLimit extends JPanel{
 					panelParametrow.setVisible(true);
 				}
 			}
+		});
+		podgladFaktury.addActionListener(l -> {
+			int sel = listaFaktur.getSelectedRow();
+			if (sel == -1) {
+				JOptionPane.showMessageDialog(this, "Nie wybrano faktury.", "Błąd", JOptionPane.ERROR_MESSAGE);
+			} else {
+				for (Fakturka k : Statyczne.getHistoria().getFaktury()) {
+					if (k.getNrFaktury().equals(listaFaktur.getValueAt(sel, 1).toString())) {
+						Aplikacja.getPanelPodgladu().setVisible(k, true);
+						break;
+					}
+				}
+			}
+		});
+		zastosuj.addActionListener(l -> {
+			zastosuj();
 		});
 		
 		trybAutomatyczny.addChangeListener(l -> {
@@ -247,6 +275,23 @@ public class PanelLimit extends JPanel{
 		this.add(trybAutomatyczny);
 		this.add(panelParametrow);
 		this.add(zastosuj);
+	}
+	
+	public void zastosuj() {
+		Statyczne.getUstawienia().setLimitOn(wlacznik.isSelected());
+		if (trybAutomatyczny.isSelected()) {
+			Statyczne.getUstawienia().setTrybLimitu(1);
+		} else if (trybReczny.isSelected()) {
+			Statyczne.getUstawienia().setTrybLimitu(2);
+		}
+		if (biezacyMiesiac.isSelected()) {
+			Statyczne.getUstawienia().setSprawdzajSumujac(1);
+		} else if (biezacyRok.isSelected()) {
+			Statyczne.getUstawienia().setSprawdzajSumujac(2);
+		}
+		System.out.println(dataTxt.getText());
+		CO DALEJ ROBIC????
+		
 	}
 
 }

@@ -8,6 +8,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.beans.PropertyVetoException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
@@ -18,6 +19,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.MaskFormatter;
@@ -35,9 +37,11 @@ public class PanelKlientow extends JPanel {
 	private JPanel zaslona;
 	private JButton nowyKlient;
 	private JButton usunKlienta;
+	private JButton podgladFaktury;
 	private RamkaDodawaniaKlienta ramkaDodawania;
 	private JLayeredPane layeredPane;
 	private DefaultTableModel modelListyKlientow;
+	private DefaultTableModel modelListyFaktur;
 
 	public PanelKlientow() {
 		super();
@@ -52,17 +56,26 @@ public class PanelKlientow extends JPanel {
 		zaslona.setBounds(0, 0, 740, 680);
 		zaslona.setBackground(Color.BLACK);
 		zaslona.setVisible(false);
-		zaslona.addMouseListener(new MouseListener() {			
+		zaslona.addMouseListener(new MouseListener() {
 			@Override
-			public void mouseReleased(MouseEvent e) {}
+			public void mouseReleased(MouseEvent e) {
+			}
+
 			@Override
-			public void mousePressed(MouseEvent e) {}
+			public void mousePressed(MouseEvent e) {
+			}
+
 			@Override
-			public void mouseExited(MouseEvent e) {}
+			public void mouseExited(MouseEvent e) {
+			}
+
 			@Override
-			public void mouseEntered(MouseEvent e) {}
+			public void mouseEntered(MouseEvent e) {
+			}
+
 			@Override
-			public void mouseClicked(MouseEvent e) {}
+			public void mouseClicked(MouseEvent e) {
+			}
 		});
 
 		tytul = new JLabel("KLIENCI");
@@ -72,8 +85,7 @@ public class PanelKlientow extends JPanel {
 
 		modelListyKlientow = new DefaultTableModel(TabelaKlientow.getNazwyKolumn(), 0) {
 			@Override
-			public boolean isCellEditable(int row, int column)
-			{
+			public boolean isCellEditable(int row, int column) {
 				return false;
 			}
 		};
@@ -81,6 +93,7 @@ public class PanelKlientow extends JPanel {
 		listaScroll = new JScrollPane(lista);
 		listaScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		listaScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		lista.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 		panelPodListe = new JPanel();
 		panelPodListe.setLayout(new BorderLayout());
@@ -91,13 +104,17 @@ public class PanelKlientow extends JPanel {
 		fakturyLab.setFont(new Font("TimesRoman", Font.BOLD, 20));
 		fakturyLab.setBounds(30, 360, 200, 40);
 
-		// ---------------------------- TESTOWE
-		Object[][] data2 = { { "1", "9146/2018", "24.11.2018", 145505.43, 214012.99, "PLN", true, false, "check" } };
-
-		listaFaktur = new TabelaFaktur(data2, TabelaFaktur.getNazwyKolumn());
+		modelListyFaktur = new DefaultTableModel(TabelaFaktur.getNazwyKolumn(), 0) {
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
+		};
+		listaFaktur = new TabelaFaktur(modelListyFaktur);
 		listaFakturScroll = new JScrollPane(listaFaktur);
 		listaFakturScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		listaFakturScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		listaFaktur.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 		panelPodListeFaktur = new JPanel();
 		panelPodListeFaktur.setLayout(new BorderLayout());
@@ -108,6 +125,8 @@ public class PanelKlientow extends JPanel {
 		nowyKlient.setBounds(550, 330, 150, 30);
 		usunKlienta = new JButton("USUŃ KLIENTA");
 		usunKlienta.setBounds(400, 330, 150, 30);
+		podgladFaktury = new JButton("PODGLAD FAKTURY");
+		podgladFaktury.setBounds(475, 370, 225, 30);
 
 		// ------- panel dodawania
 		ramkaDodawania = new RamkaDodawaniaKlienta("Dodawanie Nowego Klienta");
@@ -123,9 +142,8 @@ public class PanelKlientow extends JPanel {
 				JOptionPane.showMessageDialog(this, "Nie wybrano klienta.", "Błąd", JOptionPane.ERROR_MESSAGE);
 			} else {
 				if (JOptionPane.showOptionDialog(this, "Czy na pewno chcesz usunąć tego klienta?", "Usuwanie",
-						JOptionPane.YES_NO_OPTION, 
-					    JOptionPane.QUESTION_MESSAGE,
-					    null, new Object[] {"Tak", "Nie"}, "Tak") == 0) {
+						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[] { "Tak", "Nie" },
+						"Tak") == 0) {
 					for (Klient k : Statyczne.getHistoria().getKlienci()) {
 						if (k.toString().equals(lista.getValueAt(sel, 1).toString())) {
 							Statyczne.getHistoria().getKlienci().remove(k);
@@ -133,6 +151,41 @@ public class PanelKlientow extends JPanel {
 							odswiezListy();
 							break;
 						}
+					}
+				}
+			}
+		});
+		lista.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				pokazFakture();
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+			}
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+			}
+		});
+		podgladFaktury.addActionListener(l -> {
+			int sel = listaFaktur.getSelectedRow();
+			if (sel == -1) {
+				JOptionPane.showMessageDialog(this, "Nie wybrano faktury.", "Błąd", JOptionPane.ERROR_MESSAGE);
+			} else {
+				for (Fakturka k : Statyczne.getHistoria().getFaktury()) {
+					if (k.getNrFaktury().equals(listaFaktur.getValueAt(sel, 1).toString())) {
+						Aplikacja.getPanelPodgladu().setVisible(k, true);
+						break;
 					}
 				}
 			}
@@ -145,6 +198,7 @@ public class PanelKlientow extends JPanel {
 		layeredPane.add(panelPodListeFaktur, JLayeredPane.DEFAULT_LAYER);
 		layeredPane.add(nowyKlient, JLayeredPane.DEFAULT_LAYER);
 		layeredPane.add(usunKlienta, JLayeredPane.DEFAULT_LAYER);
+		layeredPane.add(podgladFaktury, JLayeredPane.DEFAULT_LAYER);
 		layeredPane.add(zaslona, JLayeredPane.PALETTE_LAYER);
 		layeredPane.add(ramkaDodawania, JLayeredPane.MODAL_LAYER);
 
@@ -164,13 +218,15 @@ public class PanelKlientow extends JPanel {
 			element[0] = i + 1;
 			element[1] = p.toString();
 			for (Fakturka f : Statyczne.getHistoria().getFaktury()) {
-				iloscFaktur++;
 				if (f.getKlient().equals(p)) {
-					sumaBr += f.getCenaKoncowaBrutto();
-					sumaNet += f.getCenaKoncowaNetto();
-				}
-				if (f.isZamknieta()) {
-					iloscZamknietych++;
+					iloscFaktur++;
+					if (f.getKlient().equals(p)) {
+						sumaBr += f.getCenaKoncowaBrutto();
+						sumaNet += f.getCenaKoncowaNetto();
+					}
+					if (f.isZamknieta()) {
+						iloscZamknietych++;
+					}
 				}
 			}
 			element[2] = Float.toString(sumaNet);
@@ -180,6 +236,35 @@ public class PanelKlientow extends JPanel {
 			element[6] = iloscZamknietych;
 			modelListyKlientow.addRow(element);
 			i++;
+		}
+	}
+
+	public void pokazFakture() {
+		int sel = lista.getSelectedRow();
+		if (sel != -1) {
+			for (Klient k : Statyczne.getHistoria().getKlienci()) {
+				if (k.toString().equals(lista.getValueAt(sel, 1).toString())) {
+					for (int i = modelListyFaktur.getRowCount(); i > 0; i--) {
+						modelListyFaktur.removeRow(0);
+					}
+					int j = 0;
+					for (Fakturka p : Statyczne.getHistoria().getFaktury()) {
+						if (p.getKlient().equals(k)) {
+							Object[] element = new Object[8];
+							element[0] = j + 1;
+							element[1] = p.getNrFaktury();
+							element[2] = SimpleDateFormat.getDateInstance(3).format(p.getDataWystawienia());
+							element[3] = Float.toString(p.getCenaKoncowaNetto());
+							element[4] = Float.toString(p.getCenaKoncowaBrutto());
+							element[5] = Statyczne.getUstawienia().getWaluta();
+							element[6] = p.isZamknieta();
+							element[7] = p.isUwzgledniona();
+							modelListyFaktur.addRow(element);
+							j++;
+						}
+					}
+				}
+			}
 		}
 	}
 
@@ -304,7 +389,8 @@ public class PanelKlientow extends JPanel {
 							JOptionPane.showMessageDialog(this, "Klient o takim NIPie juz istnieje.", "Błąd",
 									JOptionPane.ERROR_MESSAGE);
 						} else {
-							Statyczne.getHistoria().getKlienci().add(new Klient(imie, nazwisko, nazwaFirmy, nip, adres));
+							Statyczne.getHistoria().getKlienci()
+									.add(new Klient(imie, nazwisko, nazwaFirmy, nip, adres));
 							imieTxt.setText("");
 							nazwiskoTxt.setText("");
 							nazwaFirmyTxt.setText("");

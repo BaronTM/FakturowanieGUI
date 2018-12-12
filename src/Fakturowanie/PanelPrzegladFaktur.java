@@ -10,6 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 
@@ -20,7 +21,7 @@ public class PanelPrzegladFaktur extends JPanel {
 	private JScrollPane listaScroll;
 	private JPanel panelPodListe;
 	private JButton podglad;
-	private DefaultTableModel modelListyFakur;
+	private DefaultTableModel modelListyFaktur;
 
 	public PanelPrzegladFaktur() {
 		super();
@@ -33,16 +34,17 @@ public class PanelPrzegladFaktur extends JPanel {
 		tytul.setBounds(120, 20, 500, 40);
 		tytul.setHorizontalAlignment(SwingConstants.CENTER);
 
-		modelListyFakur = new DefaultTableModel(TabelaFaktur.getNazwyKolumn(), 0) {
+		modelListyFaktur = new DefaultTableModel(TabelaFaktur.getNazwyKolumn(), 0) {
 			@Override
 			public boolean isCellEditable(int row, int column) {
 				return false;
 			}
 		};
-		lista = new TabelaFaktur(modelListyFakur);
+		lista = new TabelaFaktur(modelListyFaktur);
 		listaScroll = new JScrollPane(lista);
 		listaScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		listaScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		lista.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 		podglad = new JButton("PODGLĄD");
 		podglad.setBounds(30, 590, 150, 30);
@@ -72,8 +74,8 @@ public class PanelPrzegladFaktur extends JPanel {
 	}
 
 	public void odswiezListe() {
-		for (int k = modelListyFakur.getRowCount(); k > 0; k--) {
-			modelListyFakur.removeRow(0);
+		for (int k = modelListyFaktur.getRowCount(); k > 0; k--) {
+			modelListyFaktur.removeRow(0);
 		}
 		int i = 0;
 		for (Fakturka p : Statyczne.getHistoria().getFaktury()) {
@@ -86,7 +88,7 @@ public class PanelPrzegladFaktur extends JPanel {
 			element[5] = Statyczne.getUstawienia().getWaluta();
 			element[6] = p.isZamknieta();
 			element[7] = p.isUwzgledniona();
-			modelListyFakur.addRow(element);
+			modelListyFaktur.addRow(element);
 			i++;
 		}
 	}

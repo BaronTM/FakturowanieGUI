@@ -23,6 +23,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
@@ -94,7 +95,7 @@ public class PanelNowejFaktury extends JPanel {
 			public void mouseClicked(MouseEvent e) {}
 		});
 
-		listaZakupow = new ArrayList<>();
+		listaZakupow = new ArrayList<Pozycja>();
 
 		tytul = new JLabel("NOWA FAKTURA");
 		tytul.setFont(new Font("TimesRoman", Font.BOLD, 30));
@@ -171,6 +172,7 @@ public class PanelNowejFaktury extends JPanel {
 		listaScroll = new JScrollPane(lista);
 		listaScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		listaScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		lista.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 		kwota = new JTextArea();
 		kwota.setFont(new Font("TimesRoman", Font.BOLD, 15));
@@ -339,7 +341,7 @@ public class PanelNowejFaktury extends JPanel {
 	public void wyczysc() {
 		uzupelnijEtykieteKlienta(null);
 		uzupelnijEtykieteWystawcy(null);
-		listaZakupow.clear();
+		listaZakupow = new ArrayList<Pozycja>();
 		odswiezListeZakupow();
 		formaPlatnosciCB.setSelectedIndex(0);
 		uwzgledniona.setSelected(true);
@@ -402,6 +404,7 @@ public class PanelNowejFaktury extends JPanel {
 			listaScrollKlientow = new JScrollPane(listaKlientow);
 			listaScrollKlientow.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 			listaScrollKlientow.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+			listaKlientow.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 			panelPodListeKlientow = new JPanel();
 			panelPodListeKlientow.setLayout(new BorderLayout());
@@ -490,6 +493,7 @@ public class PanelNowejFaktury extends JPanel {
 			listaScrollWystawcow = new JScrollPane(listaWystawcow);
 			listaScrollWystawcow.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 			listaScrollWystawcow.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+			listaWystawcow.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 			panelPodListeWystawcow = new JPanel();
 			panelPodListeWystawcow.setLayout(new BorderLayout());
@@ -579,6 +583,7 @@ public class PanelNowejFaktury extends JPanel {
 			listaScrollProduktow = new JScrollPane(listaProduktow);
 			listaScrollProduktow.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 			listaScrollProduktow.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+			listaProduktow.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 			panelPodListeProduktow = new JPanel();
 			panelPodListeProduktow.setLayout(new BorderLayout());

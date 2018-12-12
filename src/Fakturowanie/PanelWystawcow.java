@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
@@ -16,13 +17,13 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.MaskFormatter;
 
+public class PanelWystawcow extends JPanel {
 
-public class PanelWystawcow extends JPanel{
-	
 	private JLabel tytul;
 	private JLabel fakturyLab;
 	private TabelaWystawcow lista;
@@ -34,16 +35,18 @@ public class PanelWystawcow extends JPanel{
 	private JPanel zaslona;
 	private JButton nowyWystawca;
 	private JButton usunWystawce;
+	private JButton podgladFaktury;
 	private JLayeredPane layeredPane;
 	private RamkaDodawaniaWystawcy ramkaDodawania;
 	private DefaultTableModel modelListyWystawcow;
-	
+	private DefaultTableModel modelListyFaktur;
+
 	public PanelWystawcow() {
 		super();
 		this.setBounds(260, 0, 740, 680);
 		this.setLayout(null);
 		this.setBackground(Color.WHITE);
-		
+
 		layeredPane = new JLayeredPane();
 		layeredPane.setBounds(0, 0, 740, 680);
 		zaslona = new JPanel();
@@ -51,28 +54,36 @@ public class PanelWystawcow extends JPanel{
 		zaslona.setBounds(0, 0, 740, 680);
 		zaslona.setBackground(Color.BLACK);
 		zaslona.setVisible(false);
-		zaslona.addMouseListener(new MouseListener() {			
+		zaslona.addMouseListener(new MouseListener() {
 			@Override
-			public void mouseReleased(MouseEvent e) {}
+			public void mouseReleased(MouseEvent e) {
+			}
+
 			@Override
-			public void mousePressed(MouseEvent e) {}
+			public void mousePressed(MouseEvent e) {
+			}
+
 			@Override
-			public void mouseExited(MouseEvent e) {}
+			public void mouseExited(MouseEvent e) {
+			}
+
 			@Override
-			public void mouseEntered(MouseEvent e) {}
+			public void mouseEntered(MouseEvent e) {
+			}
+
 			@Override
-			public void mouseClicked(MouseEvent e) {}
+			public void mouseClicked(MouseEvent e) {
+			}
 		});
-		
+
 		tytul = new JLabel("WYSTAWCY");
 		tytul.setFont(new Font("TimesRoman", Font.BOLD, 30));
 		tytul.setBounds(120, 20, 500, 40);
 		tytul.setHorizontalAlignment(SwingConstants.CENTER);
-		
+
 		modelListyWystawcow = new DefaultTableModel(TabelaWystawcow.getNazwyKolumn(), 0) {
 			@Override
-			public boolean isCellEditable(int row, int column)
-			{
+			public boolean isCellEditable(int row, int column) {
 				return false;
 			}
 		};
@@ -80,7 +91,8 @@ public class PanelWystawcow extends JPanel{
 		listaScroll = new JScrollPane(lista);
 		listaScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		listaScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-
+		lista.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		
 		panelPodListe = new JPanel();
 		panelPodListe.setLayout(new BorderLayout());
 		panelPodListe.add(listaScroll, BorderLayout.CENTER);
@@ -89,35 +101,38 @@ public class PanelWystawcow extends JPanel{
 		fakturyLab = new JLabel("Faktury wystawcy");
 		fakturyLab.setFont(new Font("TimesRoman", Font.BOLD, 20));
 		fakturyLab.setBounds(30, 360, 200, 40);
-		
-		// ---------------------------- TESTOWE
-		Object[][] data2 = {
-				{"1", "9146/2018", "24.11.2018", 145505.43, 214012.99, "PLN", true, 
-					false, "check"}
-		};
 
-		listaFaktur = new TabelaFaktur(data2, TabelaFaktur.getNazwyKolumn());
+		modelListyFaktur = new DefaultTableModel(TabelaFaktur.getNazwyKolumn(), 0) {
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
+		};
+		listaFaktur = new TabelaFaktur(modelListyFaktur);
 		listaFakturScroll = new JScrollPane(listaFaktur);
 		listaFakturScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		listaFakturScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		listaFaktur.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 		panelPodListeFaktur = new JPanel();
 		panelPodListeFaktur.setLayout(new BorderLayout());
 		panelPodListeFaktur.add(listaFakturScroll, BorderLayout.CENTER);
 		panelPodListeFaktur.setBounds(30, 400, 680, 250);
-		
+
 		nowyWystawca = new JButton("NOWY WYSTAWCA");
 		nowyWystawca.setBounds(520, 330, 180, 30);
 		usunWystawce = new JButton("USUŃ WYSTAWCĘ");
 		usunWystawce.setBounds(340, 330, 180, 30);
-		
+		podgladFaktury = new JButton("PODGLAD FAKTURY");
+		podgladFaktury.setBounds(475, 370, 225, 30);
+
 		// ------- panel dodawania
 		ramkaDodawania = new RamkaDodawaniaWystawcy("Dodawanie Nowego Wystawcy");
-		
+
 		// ------- Listenery
 		nowyWystawca.addActionListener(l -> {
 			ramkaDodawania.setVisible(true);
-			zaslona.setVisible(true);			
+			zaslona.setVisible(true);
 		});
 		usunWystawce.addActionListener(l -> {
 			int sel = lista.getSelectedRow();
@@ -125,9 +140,8 @@ public class PanelWystawcow extends JPanel{
 				JOptionPane.showMessageDialog(this, "Nie wybrano wystawcy.", "Błąd", JOptionPane.ERROR_MESSAGE);
 			} else {
 				if (JOptionPane.showOptionDialog(this, "Czy na pewno chcesz usunąć tego wystawcę?", "Usuwanie",
-						JOptionPane.YES_NO_OPTION, 
-					    JOptionPane.QUESTION_MESSAGE,
-					    null, new Object[] {"Tak", "Nie"}, "Tak") == 0) {
+						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[] { "Tak", "Nie" },
+						"Tak") == 0) {
 					for (Wystawca k : Statyczne.getHistoria().getWystrawcy()) {
 						if (k.toString().equals(lista.getValueAt(sel, 1).toString())) {
 							Statyczne.getHistoria().getWystrawcy().remove(k);
@@ -141,7 +155,42 @@ public class PanelWystawcow extends JPanel{
 				}
 			}
 		});
-		
+		lista.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				pokazFakture();
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+			}
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+			}
+		});
+		podgladFaktury.addActionListener(l -> {
+			int sel = listaFaktur.getSelectedRow();
+			if (sel == -1) {
+				JOptionPane.showMessageDialog(this, "Nie wybrano faktury.", "Błąd", JOptionPane.ERROR_MESSAGE);
+			} else {
+				for (Fakturka k : Statyczne.getHistoria().getFaktury()) {
+					if (k.getNrFaktury().equals(listaFaktur.getValueAt(sel, 1).toString())) {
+						Aplikacja.getPanelPodgladu().setVisible(k, true);
+						break;
+					}
+				}
+			}
+		});
+
 		this.add(layeredPane);
 		layeredPane.add(tytul, JLayeredPane.DEFAULT_LAYER);
 		layeredPane.add(panelPodListe, JLayeredPane.DEFAULT_LAYER);
@@ -149,10 +198,11 @@ public class PanelWystawcow extends JPanel{
 		layeredPane.add(panelPodListeFaktur, JLayeredPane.DEFAULT_LAYER);
 		layeredPane.add(nowyWystawca, JLayeredPane.DEFAULT_LAYER);
 		layeredPane.add(usunWystawce, JLayeredPane.DEFAULT_LAYER);
+		layeredPane.add(podgladFaktury, JLayeredPane.DEFAULT_LAYER);
 		layeredPane.add(zaslona, JLayeredPane.PALETTE_LAYER);
-		layeredPane.add(ramkaDodawania, JLayeredPane.MODAL_LAYER);				
+		layeredPane.add(ramkaDodawania, JLayeredPane.MODAL_LAYER);
 	}
-	
+
 	public void odswiezListy() {
 		for (int k = modelListyWystawcow.getRowCount(); k > 0; k--) {
 			modelListyWystawcow.removeRow(0);
@@ -167,13 +217,15 @@ public class PanelWystawcow extends JPanel{
 			element[0] = i + 1;
 			element[1] = p.toString();
 			for (Fakturka f : Statyczne.getHistoria().getFaktury()) {
-				iloscFaktur++;
-				if (f.getKlient().equals(p)) {
-					sumaBr += f.getCenaKoncowaBrutto();
-					sumaNet += f.getCenaKoncowaNetto();
-				}
-				if (f.isZamknieta()) {
-					iloscZamknietych++;
+				if (f.getWystawca().equals(p)) {
+					iloscFaktur++;
+					if (f.getKlient().equals(p)) {
+						sumaBr += f.getCenaKoncowaBrutto();
+						sumaNet += f.getCenaKoncowaNetto();
+					}
+					if (f.isZamknieta()) {
+						iloscZamknietych++;
+					}
 				}
 			}
 			element[2] = Float.toString(sumaNet);
@@ -186,6 +238,34 @@ public class PanelWystawcow extends JPanel{
 		}
 	}
 
+	public void pokazFakture() {
+		int sel = lista.getSelectedRow();
+		if (sel != -1) {
+			for (Wystawca k : Statyczne.getHistoria().getWystrawcy()) {
+				if (k.toString().equals(lista.getValueAt(sel, 1).toString())) {
+					for (int i = modelListyFaktur.getRowCount(); i > 0; i--) {
+						modelListyFaktur.removeRow(0);
+					}
+					int j = 0;
+					for (Fakturka p : Statyczne.getHistoria().getFaktury()) {
+						if (p.getWystawca().equals(k)) {
+							Object[] element = new Object[8];
+							element[0] = j + 1;
+							element[1] = p.getNrFaktury();
+							element[2] = SimpleDateFormat.getDateInstance(3).format(p.getDataWystawienia());
+							element[3] = Float.toString(p.getCenaKoncowaNetto());
+							element[4] = Float.toString(p.getCenaKoncowaBrutto());
+							element[5] = Statyczne.getUstawienia().getWaluta();
+							element[6] = p.isZamknieta();
+							element[7] = p.isUwzgledniona();
+							modelListyFaktur.addRow(element);
+							j++;
+						}
+					}
+				}
+			}
+		}
+	}
 	
 	private class RamkaDodawaniaWystawcy extends JInternalFrame {
 
@@ -308,7 +388,8 @@ public class PanelWystawcow extends JPanel{
 							JOptionPane.showMessageDialog(this, "Wystawca o takim NIPie juz istnieje.", "Błąd",
 									JOptionPane.ERROR_MESSAGE);
 						} else {
-							Statyczne.getHistoria().getWystrawcy().add(new Wystawca(imie, nazwisko, nazwaFirmy, nip, adres));
+							Statyczne.getHistoria().getWystrawcy()
+									.add(new Wystawca(imie, nazwisko, nazwaFirmy, nip, adres));
 							imieTxt.setText("");
 							nazwiskoTxt.setText("");
 							nazwaFirmyTxt.setText("");
