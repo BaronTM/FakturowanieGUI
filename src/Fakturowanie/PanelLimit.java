@@ -11,6 +11,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -169,6 +170,18 @@ public class PanelLimit extends JPanel{
 		dataTxt.setBounds(390, 0, 120, 30);
 		dataTxt.setHorizontalAlignment(JTextField.CENTER);
 		dataTxt.setText("07-12-2018");
+		dataTxt.setFormatterFactory(new AbstractFormatterFactory() {
+			@Override
+			public AbstractFormatter getFormatter(JFormattedTextField tf) {
+				SimpleDateFormat format = (SimpleDateFormat) SimpleDateFormat.getDateInstance(3);
+				format.format(date);
+				InternationalFormatter formatter = new InternationalFormatter(format);
+				formatter.setAllowsInvalid(false);
+				formatter.setMinimum(0.0);
+				formatter.setMaximum(1000000.00);
+				return formatter;
+			}
+		});
 		
 		//------- lista
 		modelListyFaktur = new DefaultTableModel(TabelaFaktur.getNazwyKolumn(), 0) {
@@ -289,8 +302,15 @@ public class PanelLimit extends JPanel{
 		} else if (biezacyRok.isSelected()) {
 			Statyczne.getUstawienia().setSprawdzajSumujac(2);
 		}
-		System.out.println(dataTxt.getText());
-		CO DALEJ ROBIC????
+		String[] dateParts = dataTxt.getText().split("-");
+		try {
+		Date data = new Date(Integer.parseInt(dateParts[0]), 
+				Integer.parseInt(dateParts[1]) - 1, 
+				Integer.parseInt(dateParts[2]));
+				Statyczne.getUstawienia().setDataLimitu(data);
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(this, "Niepoprawna data.", "Błąd", JOptionPane.ERROR_MESSAGE);
+		}
 		
 	}
 
