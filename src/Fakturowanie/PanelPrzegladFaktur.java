@@ -28,7 +28,7 @@ public class PanelPrzegladFaktur extends JPanel {
 		super();
 		this.setBounds(260, 0, 740, 680);
 		this.setLayout(null);
-		this.setBackground(Color.ORANGE);
+		this.setBackground(Statyczne.getKolor());
 
 		tytul = new JLabel("PRZEGLĄD FAKTUR");
 		tytul.setFont(new Font("TimesRoman", Font.BOLD, 30));

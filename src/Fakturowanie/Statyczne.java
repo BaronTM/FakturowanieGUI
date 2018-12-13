@@ -1,5 +1,7 @@
 package Fakturowanie;
 
+import java.awt.Color;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -7,12 +9,15 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import javax.swing.JFileChooser;
+
 
 public class Statyczne {
 	
 	private static Historia historia;
 	private static Ustawienia ustawienia;
 	private static Statyczne statyczne = new Statyczne();
+	private static Color kolor = new Color(230, 230, 240);
 	
 	private Statyczne() {
 		historia = new Historia();
@@ -27,6 +32,18 @@ public class Statyczne {
 	
 	public static Ustawienia getUstawienia() {
 		return ustawienia;
+	}
+	
+	public static Color getKolor() {
+		return kolor;
+	}
+	
+	public static void resetUstawien() {
+		ustawienia = new Ustawienia();
+	}
+	
+	public static void resetHistorii() {
+		historia = new Historia();
 	}
 		
 	public static void zapiszHistorie() {
@@ -58,6 +75,29 @@ public class Statyczne {
 		} catch (FileNotFoundException e) {
 		} catch (IOException e) {
 		} catch (ClassNotFoundException e) {
+		}
+	}
+	
+	public static void zapiszHistorieDoPliku() {
+		JFileChooser plikDanych = new JFileChooser();
+		plikDanych.showSaveDialog(Aplikacja.getRamka());
+		historia.zapiszPlikHistorii(plikDanych.getSelectedFile());
+	}
+	
+	public static void wczytajHistorieZPliku() {
+		JFileChooser plikDanych = new JFileChooser();
+		plikDanych.showOpenDialog(Aplikacja.getRamka());
+		wczytajPlikHistorii(plikDanych.getSelectedFile());
+	}
+	
+	private static void wczytajPlikHistorii(File plik) {
+		try {
+			FileInputStream fis = new FileInputStream(plik);
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			historia = (Historia) ois.readObject();
+			ois.close();
+		} catch (IOException | ClassNotFoundException ex) {
+			ex.printStackTrace();
 		}
 	}
 }

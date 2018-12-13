@@ -26,7 +26,7 @@ public class PanelMenu extends JPanel {
 		super();
 		this.setLayout(null);
 		this.setBounds(0, 0, 260, 680);
-		this.setBackground(Color.BLUE);
+		this.setBackground(Statyczne.getKolor());
 		font = new Font("TimesRoman", Font.BOLD, 25);
 		
 		butNowaFaktura = new JButton("Nowa Faktura");

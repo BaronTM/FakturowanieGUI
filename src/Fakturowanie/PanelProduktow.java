@@ -52,14 +52,14 @@ public class PanelProduktow extends JPanel {
 		super();
 		this.setBounds(260, 0, 740, 680);
 		this.setLayout(null);
-		this.setBackground(Color.YELLOW);
+		this.setBackground(Statyczne.getKolor());
 
 		layeredPane = new JLayeredPane();
 		layeredPane.setBounds(0, 0, 740, 680);
 		zaslona = new JPanel();
 		zaslona.setLayout(null);
 		zaslona.setBounds(0, 0, 740, 680);
-		zaslona.setBackground(Color.BLACK);
+		zaslona.setBackground(Statyczne.getKolor());
 		zaslona.setVisible(false);
 		zaslona.addMouseListener(new MouseListener() {
 			@Override

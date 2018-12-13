@@ -10,6 +10,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
@@ -43,7 +44,7 @@ public class PanelUstawien extends JPanel {
 		super();
 		this.setBounds(260, 0, 740, 680);
 		this.setLayout(null);
-		this.setBackground(Color.CYAN);
+		this.setBackground(Statyczne.getKolor());
 
 		tytul = new JLabel("USTAWIENIA");
 		tytul.setFont(new Font("TimesRoman", Font.BOLD, 30));
@@ -118,6 +119,19 @@ public class PanelUstawien extends JPanel {
 		zastosuj.addActionListener(l -> {
 			zapiszUstawienia();
 		});
+		przywrocUst.addActionListener(l -> {
+			przywrocUstawieniaDomyslne();
+		});
+		zapiszHist.addActionListener(l -> {
+			zapiszHistorieDoPliku();
+		});
+		wczytajHist.addActionListener(l -> {
+			wczytajHistorieZPliku();
+		});
+		resetHist.addActionListener(l -> {
+			resetujHistorie();
+		});
+		
 
 		this.add(tytul);
 		this.add(walutaLab);
@@ -166,7 +180,6 @@ public class PanelUstawien extends JPanel {
 			}
 		}
 		int nowyRok = (int) rokSpin.getValue();
-		if (nowyRok != Statyczne.getUstawienia().getRok()) {
 			int nrNastepnej = 1;
 			for (Fakturka f : Statyczne.getHistoria().getFaktury()) {
 				String[] nrParts = f.getNrFaktury().split("/");
@@ -179,9 +192,45 @@ public class PanelUstawien extends JPanel {
 			}
 			Statyczne.getUstawienia().setRok(nowyRok);
 			Statyczne.getUstawienia().setNrNastepnejFaktury(nrNastepnej);
-		}
+		
 		Statyczne.getUstawienia().setVat(Float.parseFloat(vatSpin.getValue().toString()));
 		Statyczne.zapiszHistorie();
 		Statyczne.zapiszUstawienia();
+	}
+	
+	public void przywrocUstawieniaDomyslne() {
+		if (JOptionPane.showOptionDialog(this, "Czy chcesz przywrócić ustawienia domyślne?", "Przywracanie",
+				JOptionPane.YES_NO_OPTION, 
+			    JOptionPane.QUESTION_MESSAGE,
+			    null, new Object[] {"Tak", "Nie"}, "Tak") == 0) {
+				Statyczne.resetUstawien();
+				odswiez();
+				zapiszUstawienia();
+				odswiez();
+		}
+	}
+	
+	public void resetujHistorie() {
+		if (JOptionPane.showOptionDialog(this, "Czy chcesz zresetować historię?", "Reset",
+				JOptionPane.YES_NO_OPTION, 
+			    JOptionPane.QUESTION_MESSAGE,
+			    null, new Object[] {"Tak", "Nie"}, "Tak") == 0) {
+				Statyczne.resetHistorii();
+				Statyczne.getUstawienia().setNrNastepnejFaktury(1);
+				odswiez();
+				zapiszUstawienia();
+				odswiez();
+		}
+	}
+	
+	public void zapiszHistorieDoPliku() {
+		Statyczne.zapiszHistorieDoPliku();
+	}
+	
+	public void wczytajHistorieZPliku() {
+		Statyczne.wczytajHistorieZPliku();
+		odswiez();
+		zapiszUstawienia();
+		odswiez();
 	}
 }

@@ -10,7 +10,7 @@ public class PanelFunkcyjny extends JPanel{
 		super();
 		this.setLayout(null);
 		this.setBounds(260, 0, 740, 680);
-		this.setBackground(Color.GREEN);
+		this.setBackground(Statyczne.getKolor());
 	}
 
 }

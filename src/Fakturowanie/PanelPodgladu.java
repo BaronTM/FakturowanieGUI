@@ -75,7 +75,7 @@ public class PanelPodgladu extends JPanel {
 		super();
 		this.setBounds(0, 0, 1000, 680);
 		this.setLayout(null);
-		this.setBackground(Color.pink);
+		this.setBackground(Statyczne.getKolor());
 
 		this.addMouseListener(new MouseListener() {
 			@Override
@@ -104,7 +104,7 @@ public class PanelPodgladu extends JPanel {
 		zaslona = new JPanel();
 		zaslona.setLayout(null);
 		zaslona.setBounds(0, 0, 1000, 680);
-		zaslona.setBackground(Color.BLACK);
+		zaslona.setBackground(Statyczne.getKolor());
 		zaslona.setVisible(false);
 		zaslona.addMouseListener(new MouseListener() {
 			@Override
@@ -148,27 +148,31 @@ public class PanelPodgladu extends JPanel {
 		etykietaWystawcy = new JTextArea();
 		etykietaWystawcy.setFont(czcionkaEtykiet);
 		etykietaWystawcy.setEditable(false);
+		etykietaWystawcy.setBackground(Statyczne.getKolor());
 
 		etykietaKlienta = new JTextArea();
 		etykietaKlienta.setFont(czcionkaEtykiet);
 		etykietaKlienta.setEditable(false);
+		etykietaKlienta.setBackground(Statyczne.getKolor());
 
 		panelWystawcy = new JPanel();
 		panelWystawcy.setLayout(new BorderLayout());
 		panelWystawcy.add(wystawcaLab, BorderLayout.CENTER);
 		panelWystawcy.add(etykietaWystawcy, BorderLayout.SOUTH);
+		panelWystawcy.setBackground(Statyczne.getKolor());
 
 		panelKlienta = new JPanel();
 		panelKlienta.setLayout(new BorderLayout());
 		panelKlienta.add(klientLab, BorderLayout.CENTER);
-		panelKlienta.add(etykietaKlienta, BorderLayout.SOUTH);
+		panelKlienta.setBackground(Statyczne.getKolor());
 
 		panelPodEtykiety = new JPanel();
 		panelPodEtykiety.setLayout(new BorderLayout());
 		panelPodEtykiety.setBounds(170, 70, 660, 130);
 		panelPodEtykiety.add(panelKlienta, BorderLayout.WEST);
 		panelPodEtykiety.add(panelWystawcy, BorderLayout.EAST);
-
+		panelPodEtykiety.setBackground(Statyczne.getKolor());
+		
 		dodajProdukt = new JButton("Dodaj produkt");
 		dodajProdukt.setFont(new Font("TimesRoman", Font.BOLD, 15));
 		dodajProdukt.setBounds(650, 260, 180, 30);
@@ -198,6 +202,7 @@ public class PanelPodgladu extends JPanel {
 		uwzgledniona.setFont(dodajProdukt.getFont());
 		uwzgledniona.setBounds(180, 260, 300, 30);
 		uwzgledniona.setSelected(true);
+		uwzgledniona.setBackground(Statyczne.getKolor());
 
 		modelListyZakupow = new DefaultTableModel(TabelaZakupow.getNazwyKolumn(), 0) {
 			@Override
@@ -214,12 +219,14 @@ public class PanelPodgladu extends JPanel {
 		kwota = new JTextArea();
 		kwota.setFont(new Font("TimesRoman", Font.BOLD, 15));
 		kwota.setEditable(false);
+		kwota.setBackground(Statyczne.getKolor());
 		kwota.setText(String.format("Łączna kwonta netto: %.2f " + Statyczne.getUstawienia().getWaluta(), kwNet) + "\n"
 				+ String.format("Łączna kwonta brutto: %.2f " + Statyczne.getUstawienia().getWaluta(), kwBrut));
 
 		panelKwot = new JPanel();
 		panelKwot.setLayout(new BorderLayout());
 		panelKwot.add(kwota, BorderLayout.NORTH);
+		panelKwot.setBackground(Statyczne.getKolor());
 
 		panelPodListe = new JPanel();
 		panelPodListe.setLayout(new BorderLayout());
@@ -234,6 +241,7 @@ public class PanelPodgladu extends JPanel {
 		formaPlatnosciCB.setFont(formaPlatnosciLab.getFont());
 		formaPlatnosciCB.setSelectedIndex(0);
 		formaPlatnosciCB.setBounds(690, 520, 130, 30);
+		formaPlatnosciCB.setBackground(Statyczne.getKolor());
 
 		zapiszFakture = new JButton("Zapisz Fakture");
 		zapiszFakture.setFont(new Font("TimesRoman", Font.BOLD, 15));
@@ -242,12 +250,14 @@ public class PanelPodgladu extends JPanel {
 		panelPrzyciskowDolnych = new JPanel();
 		panelPrzyciskowDolnych.setLayout(new BorderLayout());
 		panelPrzyciskowDolnych.add(zapiszFakture, BorderLayout.NORTH);
+		panelPrzyciskowDolnych.setBackground(Statyczne.getKolor());
 
 		panelPodsumowania = new JPanel();
 		panelPodsumowania.setLayout(new BorderLayout());
 		panelPodsumowania.add(panelKwot, BorderLayout.EAST);
 		panelPodsumowania.add(panelPrzyciskowDolnych, BorderLayout.WEST);
 		panelPodsumowania.setBounds(160, 570, 680, 70);
+		panelPodsumowania.setBackground(Statyczne.getKolor());
 
 		ramkaDodawaniaKlienta = new RamkaDodawaniaKlienta("Dodawanie Klienta");
 		ramkaDodawaniaWystawcy = new RamkaDodawaniaWystawcy("Dodawanie Wystawcy");

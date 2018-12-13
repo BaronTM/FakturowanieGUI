@@ -1,5 +1,6 @@
 package Fakturowanie;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -53,5 +54,16 @@ public class Historia implements Serializable{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}		
+	}
+	
+	public void zapiszPlikHistorii(File plik) {
+		try {
+			FileOutputStream fos = new FileOutputStream(plik);
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			oos.writeObject(this);
+			oos.close();
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
 	}
 }

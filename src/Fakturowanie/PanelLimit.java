@@ -69,7 +69,7 @@ public class PanelLimit extends JPanel {
 		super();
 		this.setBounds(260, 0, 740, 680);
 		this.setLayout(null);
-		this.setBackground(Color.CYAN);
+		this.setBackground(Statyczne.getKolor());
 
 		tytul = new JLabel("LIMIT");
 		tytul.setFont(new Font("TimesRoman", Font.BOLD, 30));
@@ -92,9 +92,11 @@ public class PanelLimit extends JPanel {
 		trybAutomatyczny = new JRadioButton("Tryb automatyczny");
 		trybAutomatyczny.setFont(new Font("TimesRoman", Font.CENTER_BASELINE, 15));
 		trybAutomatyczny.setBounds(400, 150, 200, 30);
+		trybAutomatyczny.setBackground(Statyczne.getKolor());
 		trybReczny = new JRadioButton("Tryb ręczny");
 		trybReczny.setFont(trybAutomatyczny.getFont());
 		trybReczny.setBounds(400, 180, 150, 30);
+		trybReczny.setBackground(Statyczne.getKolor());
 		trybyGrupa = new ButtonGroup();
 		trybyGrupa.add(trybReczny);
 		trybyGrupa.add(trybAutomatyczny);
@@ -108,7 +110,7 @@ public class PanelLimit extends JPanel {
 		panelParametrow = new JPanel();
 		panelParametrow.setLayout(null);
 		panelParametrow.setBounds(0, 230, 740, 370);
-		panelParametrow.setBackground(Color.MAGENTA);
+		panelParametrow.setBackground(Statyczne.getKolor());
 		panelParametrow.setVisible(true);
 
 		kwotaLab = new JLabel("Kwota limitu");
@@ -138,6 +140,7 @@ public class PanelLimit extends JPanel {
 		limitNetBrut = new JComboBox<String>(Statyczne.getUstawienia().getRodzajeLimitu());
 		limitNetBrut.setFont(trybAutomatyczny.getFont());
 		limitNetBrut.setBounds(520, 80, 100, 30);
+		limitNetBrut.setBackground(Statyczne.getKolor());
 
 		// ------- tryb automatyczny
 
@@ -148,9 +151,11 @@ public class PanelLimit extends JPanel {
 		biezacyMiesiac = new JRadioButton("Bieżący miesiąc");
 		biezacyMiesiac.setFont(trybAutomatyczny.getFont());
 		biezacyMiesiac.setBounds(390, 0, 200, 30);
+		biezacyMiesiac.setBackground(Statyczne.getKolor());
 		biezacyRok = new JRadioButton("Bieżący rok");
 		biezacyRok.setFont(trybAutomatyczny.getFont());
 		biezacyRok.setBounds(390, 30, 150, 30);
+		biezacyRok.setBackground(Statyczne.getKolor());
 		biezacyGrupa = new ButtonGroup();
 		biezacyGrupa.add(biezacyMiesiac);
 		biezacyGrupa.add(biezacyRok);
@@ -201,7 +206,7 @@ public class PanelLimit extends JPanel {
 		panelAutomatyczny = new JPanel();
 		panelAutomatyczny.setLayout(null);
 		panelAutomatyczny.setBounds(10, 0, 720, 60);
-		panelAutomatyczny.setBackground(Color.GREEN);
+		panelAutomatyczny.setBackground(Statyczne.getKolor());
 		panelAutomatyczny.setVisible(true);
 
 		panelAutomatyczny.add(biezacyMiesiac);
@@ -211,7 +216,7 @@ public class PanelLimit extends JPanel {
 		panelReczny = new JPanel();
 		panelReczny.setLayout(null);
 		panelReczny.setBounds(10, 0, 720, 60);
-		panelReczny.setBackground(Color.LIGHT_GRAY);
+		panelReczny.setBackground(Statyczne.getKolor());
 		panelReczny.setVisible(false);
 
 		panelReczny.add(mansumLab);
