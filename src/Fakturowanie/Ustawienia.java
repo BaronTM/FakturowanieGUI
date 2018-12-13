@@ -147,7 +147,13 @@ public class Ustawienia implements Serializable{
 		this.dataLimitu = dataLimitu;
 	}
 	
-	public void zapiszUstawienia() {
+	public String getIndexFaktury() {
+		String nrFaktury = nrNastepnejFaktury + "/" + rok;
+		nrNastepnejFaktury++;
+		return nrFaktury;
+	}
+	
+	public void zapisz() {
 		try {
 			FileOutputStream fos = new FileOutputStream("ustawienia.ser");
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -159,12 +165,6 @@ public class Ustawienia implements Serializable{
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}	
+		}		
 	}
-	
-	public String getIndexFaktury() {
-		String nrFaktury = nrNastepnejFaktury + "/" + rok;
-		nrNastepnejFaktury++;
-		return nrFaktury;
-	}	
 }

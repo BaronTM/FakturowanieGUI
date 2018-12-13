@@ -384,8 +384,8 @@ public class PanelPodgladu extends JPanel {
 						fakturka.setZamknieta(true);
 					}
 					fakturka.obliczKwotyKoncowej();
-					Statyczne.getUstawienia().zapiszUstawienia();
-					Statyczne.getHistoria().zapiszHistorie();
+					Statyczne.zapiszUstawienia();
+					Statyczne.zapiszHistorie();
 					setVisible(fakturka, true);
 				}
 			}

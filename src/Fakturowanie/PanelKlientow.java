@@ -147,7 +147,7 @@ public class PanelKlientow extends JPanel {
 					for (Klient k : Statyczne.getHistoria().getKlienci()) {
 						if (k.toString().equals(lista.getValueAt(sel, 1).toString())) {
 							Statyczne.getHistoria().getKlienci().remove(k);
-							Statyczne.getHistoria().zapiszHistorie();
+							Statyczne.zapiszHistorie();
 							odswiezListy();
 							break;
 						}
@@ -220,15 +220,15 @@ public class PanelKlientow extends JPanel {
 			for (Fakturka f : Statyczne.getHistoria().getFaktury()) {
 				if (f.getKlient().equals(p)) {
 					iloscFaktur++;
-					if (f.getKlient().equals(p)) {
-						sumaBr += f.getCenaKoncowaBrutto();
-						sumaNet += f.getCenaKoncowaNetto();
-					}
+					sumaBr += f.getCenaKoncowaBrutto();
+					sumaNet += f.getCenaKoncowaNetto();
 					if (f.isZamknieta()) {
 						iloscZamknietych++;
 					}
 				}
 			}
+			sumaBr = Aplikacja.zaokraglij(sumaBr);
+			sumaNet = Aplikacja.zaokraglij(sumaNet);
 			element[2] = Float.toString(sumaNet);
 			element[3] = Float.toString(sumaBr);
 			element[4] = Statyczne.getUstawienia().getWaluta();
@@ -397,7 +397,7 @@ public class PanelKlientow extends JPanel {
 							nipTxt.setText("");
 							adresTxt.setText("");
 							odswiezListy();
-							Statyczne.getHistoria().zapiszHistorie();
+							Statyczne.zapiszHistorie();
 							this.setVisible(false);
 							zaslona.setVisible(false);
 						}

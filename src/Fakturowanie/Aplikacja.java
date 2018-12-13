@@ -124,5 +124,13 @@ public class Aplikacja {
 	public static Aplikacja getAplikacja() {
 		return aplikacja;
 	}
+	
+	public static float zaokraglij(float f) {
+		int i = (int) (f * 100);
+		f = Math.round(i);
+		float wynik = 0.0f;
+		wynik = f / 100;
+		return wynik;
+	}
 
 }

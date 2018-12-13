@@ -92,7 +92,7 @@ public class PanelWystawcow extends JPanel {
 		listaScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		listaScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		lista.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		
+
 		panelPodListe = new JPanel();
 		panelPodListe.setLayout(new BorderLayout());
 		panelPodListe.add(listaScroll, BorderLayout.CENTER);
@@ -219,15 +219,15 @@ public class PanelWystawcow extends JPanel {
 			for (Fakturka f : Statyczne.getHistoria().getFaktury()) {
 				if (f.getWystawca().equals(p)) {
 					iloscFaktur++;
-					if (f.getKlient().equals(p)) {
-						sumaBr += f.getCenaKoncowaBrutto();
-						sumaNet += f.getCenaKoncowaNetto();
-					}
+					sumaBr += f.getCenaKoncowaBrutto();
+					sumaNet += f.getCenaKoncowaNetto();
 					if (f.isZamknieta()) {
 						iloscZamknietych++;
 					}
 				}
 			}
+			sumaBr = Aplikacja.zaokraglij(sumaBr);
+			sumaNet = Aplikacja.zaokraglij(sumaNet);
 			element[2] = Float.toString(sumaNet);
 			element[3] = Float.toString(sumaBr);
 			element[4] = Statyczne.getUstawienia().getWaluta();
@@ -266,7 +266,7 @@ public class PanelWystawcow extends JPanel {
 			}
 		}
 	}
-	
+
 	private class RamkaDodawaniaWystawcy extends JInternalFrame {
 
 		private JPanel panelDodawania;
@@ -396,7 +396,7 @@ public class PanelWystawcow extends JPanel {
 							nipTxt.setText("");
 							adresTxt.setText("");
 							odswiezListy();
-							Statyczne.getHistoria().zapiszHistorie();
+							Statyczne.zapiszHistorie();
 							this.setVisible(false);
 							zaslona.setVisible(false);
 						}

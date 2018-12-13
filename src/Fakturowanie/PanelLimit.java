@@ -59,6 +59,7 @@ public class PanelLimit extends JPanel {
 	private JPanel panelPodListeFaktur;
 	private JButton zastosuj;
 	private JButton podgladFaktury;
+	private JButton odswiezListeFaktur;
 	private TabelaFaktur listaFaktur;
 	private JScrollPane listaFakturScroll;
 	private JComboBox<String> limitNetBrut;
@@ -187,6 +188,8 @@ public class PanelLimit extends JPanel {
 
 		podgladFaktury = new JButton("PODGLAD FAKTURY");
 		podgladFaktury.setBounds(475, 330, 225, 30);
+		odswiezListeFaktur = new JButton("ODŚWIEŻ LISTĘ");
+		odswiezListeFaktur.setBounds(40, 330, 225, 30);
 
 		panelPodListeFaktur = new JPanel();
 		panelPodListeFaktur.setLayout(new BorderLayout());
@@ -220,6 +223,7 @@ public class PanelLimit extends JPanel {
 		panelParametrow.add(kwotaTxt);
 		panelParametrow.add(panelPodListeFaktur);
 		panelParametrow.add(podgladFaktury);
+		panelParametrow.add(odswiezListeFaktur);
 		panelParametrow.add(limitNetBrut);
 
 		// ------- listenery
@@ -255,6 +259,9 @@ public class PanelLimit extends JPanel {
 		});
 		zastosuj.addActionListener(l -> {
 			zastosuj();
+		});
+		odswiezListeFaktur.addActionListener(l -> {
+			odswiezListeFaktur();
 		});
 
 		trybAutomatyczny.addChangeListener(l -> {
@@ -316,6 +323,8 @@ public class PanelLimit extends JPanel {
 			Statyczne.getUstawienia().setLimit(kwotaLimitu);
 			Statyczne.getUstawienia().setLimitRodzaj((String) limitNetBrut.getSelectedItem());
 		}
+		Statyczne.zapiszUstawienia();
+		Statyczne.zapiszHistorie();
 	}
 
 	public void odswiezListeFaktur() {
@@ -356,7 +365,6 @@ public class PanelLimit extends JPanel {
 					element[0] = j + 1;
 					element[1] = k.getNrFaktury();
 					element[2] = SimpleDateFormat.getDateInstance(3).format(k.getDataWystawienia());
-					System.out.println(data + "     " + k.getDataWystawienia());
 					element[3] = Float.toString(k.getCenaKoncowaNetto());
 					element[4] = Float.toString(k.getCenaKoncowaBrutto());
 					element[5] = Statyczne.getUstawienia().getWaluta();
@@ -367,6 +375,37 @@ public class PanelLimit extends JPanel {
 				}
 			}
 		}
+	}
+	
+	public void odswiez() {
+		if (Statyczne.getUstawienia().isLimitOn()) {
+			wlacznik.setSelected(true);
+			trybLab.setVisible(true);
+			trybReczny.setVisible(true);
+			trybAutomatyczny.setVisible(true);
+			if (Statyczne.getUstawienia().getTrybLimitu() == 1) {
+				panelAutomatyczny.setVisible(true);
+				panelReczny.setVisible(false);
+			} else if (Statyczne.getUstawienia().getTrybLimitu() == 2) {
+				panelAutomatyczny.setVisible(false);
+				panelReczny.setVisible(true);
+			}
+			panelParametrow.setVisible(true);
+		} else {
+			wlacznik.setSelected(false);
+			trybLab.setVisible(false);
+			trybReczny.setVisible(false);
+			trybAutomatyczny.setVisible(false);
+			if (Statyczne.getUstawienia().getTrybLimitu() == 1) {
+				panelAutomatyczny.setVisible(true);
+				panelReczny.setVisible(false);
+			} else if (Statyczne.getUstawienia().getTrybLimitu() == 2) {
+				panelAutomatyczny.setVisible(false);
+				panelReczny.setVisible(true);
+			}
+			panelParametrow.setVisible(false);
+		}
+		zaladujUstawieniaOnOff();
 	}
 	
 	public void zaladujUstawieniaOnOff() {
@@ -404,6 +443,10 @@ public class PanelLimit extends JPanel {
 		kwotaTxt.setValue(Statyczne.getUstawienia().getLimit());
 		limitNetBrut.setSelectedItem(Statyczne.getUstawienia().getLimitRodzaj());
 		odswiezListeFaktur();
+	}
+	
+	public void przywrocUstawieniaDomyslne() {
+		
 	}
 	
 }

@@ -76,6 +76,7 @@ public class PanelMenu extends JPanel {
 		butNowaFaktura.addActionListener(l -> {
 			wylaczPanele();
 			Aplikacja.getPanelNowejFaktury().setVisible(true);
+			Aplikacja.getPanelNowejFaktury().wyczysc();
 		});
 		butPrzegladajFaktury.addActionListener(l -> {
 			wylaczPanele();
@@ -98,16 +99,15 @@ public class PanelMenu extends JPanel {
 		});
 		butLimit.addActionListener(l -> {
 			wylaczPanele();
-			Aplikacja.getPanelLimit().setVisible(true);
+			Aplikacja.getPanelLimit().setVisible(true);			
+			Aplikacja.getPanelLimit().odswiez();		
 		});
 		butUstawienia.addActionListener(l -> {
 			wylaczPanele();
 			Aplikacja.getPanelUstawien().setVisible(true);
+			Aplikacja.getPanelUstawien().odswiez();
 		});
-		
-	
-
-		
+				
 		this.add(butNowaFaktura);
 		this.add(butPrzegladajFaktury);
 		this.add(butKlienci);

@@ -71,15 +71,8 @@ public class Pozycja implements Serializable, Cloneable{
 	//------- INNE METODY
 
 	public void oblicz() {
-		kwotaNettoPoz = zaokraglij(produkt.getCenaNetto() * ilosc) * (1 - rabat);
-		kwotaBruttoPoz = zaokraglij(kwotaNettoPoz * (1 + vatPoz));
-	}
-	
-	public float zaokraglij(float f) {
-		f = f * 100;
-		f = Math.round(f);
-		f = f / 100;
-		return f;
+		kwotaNettoPoz = Aplikacja.zaokraglij(produkt.getCenaNetto() * ilosc) * (1 - rabat);
+		kwotaBruttoPoz = Aplikacja.zaokraglij(kwotaNettoPoz * (1 + vatPoz));
 	}
 }
 

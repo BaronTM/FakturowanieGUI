@@ -6,6 +6,7 @@ public class Produkt implements Serializable, Cloneable{
 	
 	private String nazwa;
 	private float cenaNetto;
+	private float cenaPLN;
 	private String jednostka;
 	private static String[] listaJednostek = {"SZT", "KG", "L", "M", "M2", "M3"}; 
     private static final long serialVersionUID = 17558941369716569L;
@@ -15,6 +16,7 @@ public class Produkt implements Serializable, Cloneable{
 		this.nazwa = nazwa;
 		this.cenaNetto = cenaNetto;
 		this.jednostka = jednostka;
+		this.cenaPLN = Aplikacja.zaokraglij(cenaNetto * Statyczne.getUstawienia().getCzynnikWaluty());
 	}
     
 	public Produkt clone() throws CloneNotSupportedException {
@@ -43,7 +45,7 @@ public class Produkt implements Serializable, Cloneable{
 	}
 	
 	public void setCenaNetto(float cena) {
-		this.cenaNetto = cena;
+		this.cenaNetto = cena;		
 	}
 	
 	public void setJednostka(String jednostka) {
@@ -63,7 +65,11 @@ public class Produkt implements Serializable, Cloneable{
 					&& jednostka.equals(other.jednostka));
 		}
 	}
-
+	
+	public void aktualizujKoszt() {
+		float nowaCena = cenaPLN / Statyczne.getUstawienia().getCzynnikWaluty();
+		cenaNetto = Aplikacja.zaokraglij(nowaCena);
+	}
 }
 
 

@@ -21,6 +21,7 @@ public class PanelPrzegladFaktur extends JPanel {
 	private JScrollPane listaScroll;
 	private JPanel panelPodListe;
 	private JButton podglad;
+	private JButton odswiezListeFaktur;
 	private DefaultTableModel modelListyFaktur;
 
 	public PanelPrzegladFaktur() {
@@ -48,6 +49,8 @@ public class PanelPrzegladFaktur extends JPanel {
 
 		podglad = new JButton("PODGLĄD");
 		podglad.setBounds(30, 590, 150, 30);
+		odswiezListeFaktur = new JButton("ODŚWIEŻ LISTĘ");
+		odswiezListeFaktur.setBounds(510, 590, 200, 30);
 
 		podglad.addActionListener(l -> {
 			int sel = lista.getSelectedRow();
@@ -62,6 +65,9 @@ public class PanelPrzegladFaktur extends JPanel {
 				}
 			}
 		});
+		odswiezListeFaktur.addActionListener(l -> {
+			odswiezListe();
+		});
 
 		panelPodListe = new JPanel();
 		panelPodListe.setLayout(new BorderLayout());
@@ -71,6 +77,7 @@ public class PanelPrzegladFaktur extends JPanel {
 		this.add(tytul);
 		this.add(panelPodListe);
 		this.add(podglad);
+		this.add(odswiezListeFaktur);
 	}
 
 	public void odswiezListe() {

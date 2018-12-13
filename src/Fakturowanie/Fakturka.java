@@ -123,5 +123,15 @@ public class Fakturka implements Serializable{
 			cenaKoncowaNetto += p.getKwotaNettoPoz();
 			cenaKoncowaBrutto += p.getKwotaBruttoPoz();
 		}
-	}		
+		cenaKoncowaNetto = Aplikacja.zaokraglij(cenaKoncowaNetto);
+		cenaKoncowaBrutto = Aplikacja.zaokraglij(cenaKoncowaBrutto);
+	}
+	
+	public void aktualizujKoszt() {
+		for (Pozycja p : listaProduktow) {
+			p.oblicz();
+		}
+		obliczKwotyKoncowej();
+	}
+
 }

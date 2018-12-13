@@ -40,7 +40,7 @@ public class Historia implements Serializable{
 		return produkty;
 	}
 	
-	public void zapiszHistorie() {
+	public void zapisz() {
 		try {
 			FileOutputStream fos = new FileOutputStream("historia.ser");
 			ObjectOutputStream oos = new ObjectOutputStream(fos);

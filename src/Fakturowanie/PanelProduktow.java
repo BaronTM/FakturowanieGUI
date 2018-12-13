@@ -366,7 +366,7 @@ public class PanelProduktow extends JPanel {
 						cenaTxt.setText("0.00");
 						jednostkaCB.setSelectedIndex(0);
 						odswiezListy();
-						Statyczne.getHistoria().zapiszHistorie();
+						Statyczne.zapiszHistorie();
 						this.setVisible(false);
 						zaslona.setVisible(false);
 					}

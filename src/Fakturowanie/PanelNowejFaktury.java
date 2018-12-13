@@ -331,8 +331,8 @@ public class PanelNowejFaktury extends JPanel {
 			}
 			nowa.obliczKwotyKoncowej();
 			Statyczne.getHistoria().getFaktury().add(nowa);
-			Statyczne.getUstawienia().zapiszUstawienia();
-			Statyczne.getHistoria().zapiszHistorie();
+			Statyczne.zapiszHistorie();
+			Statyczne.zapiszUstawienia();
 			wyczysc();
 		}
 	}
@@ -340,7 +340,7 @@ public class PanelNowejFaktury extends JPanel {
 	
 	public void wyczysc() {
 		uzupelnijEtykieteKlienta(null);
-		uzupelnijEtykieteWystawcy(null);
+		uzupelnijEtykieteWystawcy(Statyczne.getUstawienia().getDomyslnyWystawca());
 		listaZakupow = new ArrayList<Pozycja>();
 		odswiezListeZakupow();
 		formaPlatnosciCB.setSelectedIndex(0);
@@ -632,7 +632,6 @@ public class PanelNowejFaktury extends JPanel {
 					}
 				}
 			});
-
 			this.add(panelDodawaniaProduktow);
 			this.setVisible(false);
 		}
