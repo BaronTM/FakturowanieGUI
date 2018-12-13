@@ -236,6 +236,7 @@ public class PanelLimit extends JPanel {
 					trybReczny.setVisible(true);
 					trybAutomatyczny.setVisible(true);
 					panelParametrow.setVisible(true);
+					zaladujUstawieniaOnOff();
 				}
 			}
 		});
@@ -292,11 +293,11 @@ public class PanelLimit extends JPanel {
 				try {
 					int day = Integer.parseInt(dateParts[0]);
 					int month = Integer.parseInt(dateParts[1]) - 1;
-					int year = Integer.parseInt(dateParts[2]);
-					if ((day < 1) || (day > 31) || (month < 0) || (month > 11) || (year < 0) || (year > 3000)) {
+					int year = Integer.parseInt(dateParts[2]) - 1900;
+					if ((day < 1) || (day > 31) || (month < 0) || (month > 11) || (year < 0) || (year > 1100)) {
 						JOptionPane.showMessageDialog(this, "Niepoprawna data.", "Błąd", JOptionPane.ERROR_MESSAGE);
 					} else {
-						Date data = new Date(day, month, year);
+						Date data = new Date(year, month, day);
 						Statyczne.getUstawienia().setDataLimitu(data);
 					}
 				} catch (Exception e) {
@@ -315,12 +316,11 @@ public class PanelLimit extends JPanel {
 			Statyczne.getUstawienia().setLimit(kwotaLimitu);
 			Statyczne.getUstawienia().setLimitRodzaj((String) limitNetBrut.getSelectedItem());
 		}
-		odswiezListeFaktur();
 	}
 
 	public void odswiezListeFaktur() {
 		Date data = new Date();
-		if (wlacznik.isSelected()) {
+		if (panelParametrow.isVisible()) {
 			if (trybAutomatyczny.isSelected()) {
 				if (biezacyMiesiac.isSelected()) {
 					int month = data.getMonth();
@@ -335,25 +335,28 @@ public class PanelLimit extends JPanel {
 				try {
 					int day = Integer.parseInt(dateParts[0]);
 					int month = Integer.parseInt(dateParts[1]) - 1;
-					int year = Integer.parseInt(dateParts[2]);
-					if ((day < 1) || (day > 31) || (month < 0) || (month > 11) || (year < 0) || (year > 3000)) {
+					int year = Integer.parseInt(dateParts[2]) - 1900;
+					if ((day < 1) || (day > 31) || (month < 0) || (month > 11) || (year < 0) || (year > 1100)) {
 						JOptionPane.showMessageDialog(this, "Niepoprawna data.", "Błąd", JOptionPane.ERROR_MESSAGE);
 					} else {
-						data = new Date(day, month, year);
+						data = new Date(year, month, day);
 					}
 				} catch (Exception e) {
 					JOptionPane.showMessageDialog(this, "Niepoprawna data.", "Błąd", JOptionPane.ERROR_MESSAGE);
 					dataTxt.setText("01-01-2018");
 				}
 			}
-			
+			for (int i = modelListyFaktur.getRowCount(); i > 0; i--) {
+				modelListyFaktur.removeRow(0);
+			}			
 			int j = 0;
 			for (Fakturka k : Statyczne.getHistoria().getFaktury()) {
-				if (k.getDataWystawienia().compareTo(data) <= 0) {
+				if (data.getTime() < k.getDataWystawienia().getTime()) {
 					Object[] element = new Object[8];
 					element[0] = j + 1;
 					element[1] = k.getNrFaktury();
 					element[2] = SimpleDateFormat.getDateInstance(3).format(k.getDataWystawienia());
+					System.out.println(data + "     " + k.getDataWystawienia());
 					element[3] = Float.toString(k.getCenaKoncowaNetto());
 					element[4] = Float.toString(k.getCenaKoncowaBrutto());
 					element[5] = Statyczne.getUstawienia().getWaluta();
@@ -367,8 +370,40 @@ public class PanelLimit extends JPanel {
 	}
 	
 	public void zaladujUstawieniaOnOff() {
-		if (Ustawienia.get)
-			// wczytywanie ustawien limitu po zmianie on/off
+		switch (Statyczne.getUstawienia().getTrybLimitu()) {
+		case 1: {
+			trybAutomatyczny.setSelected(true);
+			
+			switch (Statyczne.getUstawienia().getSprawdzajSumujac()) {
+			case 1: {
+				biezacyMiesiac.setSelected(true);
+				break;
+			}
+			case 2: {
+				biezacyRok.setSelected(true);
+				break;
+			}
+			}
+			break;
+		}
+		case 2: {
+			trybReczny.setSelected(true);
+			String dd = Integer.toString(Statyczne.getUstawienia().getDataLimitu().getDate());
+			String mm = Integer.toString(Statyczne.getUstawienia().getDataLimitu().getMonth() + 1);
+			String yyyy = Integer.toString(Statyczne.getUstawienia().getDataLimitu().getYear() + 1900);
+			if (dd.length() == 1) {
+				dd = "0" + dd; 
+			}
+			if (mm.length() == 1) {
+				mm = "0" + mm; 
+			}
+			dataTxt.setText(dd + "-" + mm + "-" + yyyy);
+			break;
+		}
+		}
+		kwotaTxt.setValue(Statyczne.getUstawienia().getLimit());
+		limitNetBrut.setSelectedItem(Statyczne.getUstawienia().getLimitRodzaj());
+		odswiezListeFaktur();
 	}
-
+	
 }
