@@ -1,9 +1,10 @@
 package Fakturowanie;
 
 import javax.swing.*;
+
 import java.awt.*;
 
-public class Aplikacja {
+public class Aplikacja implements CheckerListener {
 
 	private static JFrame ramka;
 	private static PanelMenu panelMenu;
@@ -18,6 +19,9 @@ public class Aplikacja {
 	private static PanelPodgladu panelPodgladu;
 	private static JLayeredPane layeredPane;
 	private static Aplikacja aplikacja = new Aplikacja();
+	private static CheckerInvoker ci;
+	private static Thread thread;
+	private static int iloscMinut;
 
 	public static void main(String[] args) {
 		Aplikacja.run();
@@ -73,6 +77,11 @@ public class Aplikacja {
 		layeredPane.add(panelLimit, JLayeredPane.DEFAULT_LAYER);
 		layeredPane.add(panelPodgladu, JLayeredPane.PALETTE_LAYER);
 
+		ci = new CheckerInvoker();
+		ci.addCheckerListener(aplikacja);
+		thread = new Thread(ci);
+		thread.start();
+
 		ramka.setResizable(false);
 		ramka.setLocationRelativeTo(null);
 		ramka.setVisible(true);
@@ -126,6 +135,10 @@ public class Aplikacja {
 		return aplikacja;
 	}
 
+	public static void resetujIloscMinut() {
+		iloscMinut = 0;
+	}
+
 	public static float zaokraglij(float f) {
 		int i = (int) (f * 100);
 		f = Math.round(i);
@@ -134,4 +147,51 @@ public class Aplikacja {
 		return wynik;
 	}
 
+	@Override
+	public void nextMinute(CheckerEvent e) {
+		if (Statyczne.getUstawienia().isLimitOn()) {
+			iloscMinut++;
+			if (Statyczne.getUstawienia().getCzestotliwosc().equals("5 MINUT")) {
+				if (iloscMinut >= 5) {
+					iloscMinut = 0;
+					if (Statyczne.sprawdzLimit()) {
+						JOptionPane.showMessageDialog(ramka, "Limit został przekroczony.", "Uwaga",
+								JOptionPane.WARNING_MESSAGE);
+					}
+				}
+			} else if (Statyczne.getUstawienia().getCzestotliwosc().equals("10 MINUT")) {
+				if (iloscMinut >= 10) {
+					iloscMinut = 0;
+					if (Statyczne.sprawdzLimit()) {
+						JOptionPane.showMessageDialog(ramka, "Limit został przekroczony.", "Uwaga",
+								JOptionPane.WARNING_MESSAGE);
+					}
+				}
+			} else if (Statyczne.getUstawienia().getCzestotliwosc().equals("15 MINUT")) {
+				if (iloscMinut >= 15) {
+					iloscMinut = 0;
+					if (Statyczne.sprawdzLimit()) {
+						JOptionPane.showMessageDialog(ramka, "Limit został przekroczony.", "Uwaga",
+								JOptionPane.WARNING_MESSAGE);
+					}
+				}
+			} else if (Statyczne.getUstawienia().getCzestotliwosc().equals("30 MINUT")) {
+				if (iloscMinut >= 30) {
+					iloscMinut = 0;
+					if (Statyczne.sprawdzLimit()) {
+						JOptionPane.showMessageDialog(ramka, "Limit został przekroczony.", "Uwaga",
+								JOptionPane.WARNING_MESSAGE);
+					}
+				}
+			} else if (Statyczne.getUstawienia().getCzestotliwosc().equals("GODZINA")) {
+				if (iloscMinut >= 60) {
+					iloscMinut = 0;
+					if (Statyczne.sprawdzLimit()) {
+						JOptionPane.showMessageDialog(ramka, "Limit został przekroczony.", "Uwaga",
+								JOptionPane.WARNING_MESSAGE);
+					}
+				}
+			}
+		}
+	}
 }

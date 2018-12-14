@@ -1,12 +1,10 @@
 package Fakturowanie;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.math.RoundingMode;
-import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -25,13 +23,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
-import javax.swing.text.DateFormatter;
 import javax.swing.text.InternationalFormatter;
 import javax.swing.text.MaskFormatter;
 
@@ -45,6 +39,7 @@ public class PanelLimit extends JPanel {
 	private JLabel autosumLab;
 	private JLabel mansumLab;
 	private JLabel kwotaLab;
+	private JLabel czestotliwoscLab;
 	private JFormattedTextField dataTxt;
 	private JFormattedTextField kwotaTxt;
 	private JRadioButton trybReczny;
@@ -63,6 +58,7 @@ public class PanelLimit extends JPanel {
 	private TabelaFaktur listaFaktur;
 	private JScrollPane listaFakturScroll;
 	private JComboBox<String> limitNetBrut;
+	private JComboBox<String> czestotliwoscCB;
 	private DefaultTableModel modelListyFaktur;
 
 	public PanelLimit() {
@@ -84,6 +80,9 @@ public class PanelLimit extends JPanel {
 		trybLab = new JLabel("Tryb limitu");
 		trybLab.setFont(labelFont);
 		trybLab.setBounds(30, 150, 150, 30);
+		czestotliwoscLab = new JLabel("Częstotliwość sprawdzania");
+		czestotliwoscLab.setFont(labelFont);
+		czestotliwoscLab.setBounds(30, 230, 300, 30);
 
 		wlacznik = new SwitchBox("ON", "OFF");
 		wlacznik.setBounds(400, 100, 130, 30);
@@ -104,19 +103,24 @@ public class PanelLimit extends JPanel {
 
 		zastosuj = new JButton("ZASTOSUJ");
 		zastosuj.setBounds(550, 620, 150, 30);
+		
+		czestotliwoscCB = new JComboBox<String>(Statyczne.getUstawienia().getDostepneCzestotliwosci());
+		czestotliwoscCB.setFont(trybAutomatyczny.getFont());
+		czestotliwoscCB.setBackground(Statyczne.getKolor());
+		czestotliwoscCB.setBounds(400, 230, 150, 30);
 
 		// ------- panel trybow limitu
 
 		panelParametrow = new JPanel();
 		panelParametrow.setLayout(null);
-		panelParametrow.setBounds(0, 230, 740, 370);
+		panelParametrow.setBounds(0, 280, 740, 320);
 		panelParametrow.setBackground(Statyczne.getKolor());
 		panelParametrow.setVisible(true);
 
 		kwotaLab = new JLabel("Kwota limitu");
 		kwotaLab.setFont(labelFont);
 		kwotaLab.setBounds(30, 80, 150, 30);
-
+		
 		kwotaTxt = new JFormattedTextField();
 		kwotaTxt.setFont(trybAutomatyczny.getFont());
 		kwotaTxt.setBounds(400, 80, 120, 30);
@@ -192,14 +196,14 @@ public class PanelLimit extends JPanel {
 		listaFaktur.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 		podgladFaktury = new JButton("PODGLAD FAKTURY");
-		podgladFaktury.setBounds(475, 330, 225, 30);
+		podgladFaktury.setBounds(475, 280, 225, 30);
 		odswiezListeFaktur = new JButton("ODŚWIEŻ LISTĘ");
-		odswiezListeFaktur.setBounds(40, 330, 225, 30);
+		odswiezListeFaktur.setBounds(40, 280, 225, 30);
 
 		panelPodListeFaktur = new JPanel();
 		panelPodListeFaktur.setLayout(new BorderLayout());
 		panelPodListeFaktur.add(listaFakturScroll, BorderLayout.CENTER);
-		panelPodListeFaktur.setBounds(30, 130, 680, 200);
+		panelPodListeFaktur.setBounds(30, 130, 680, 150);
 
 		// ------- panele trybu
 
@@ -236,14 +240,18 @@ public class PanelLimit extends JPanel {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				if (wlacznik.isSelected()) {
-					trybLab.setVisible(false);
+					trybLab.setVisible(false);					
 					trybReczny.setVisible(false);
 					trybAutomatyczny.setVisible(false);
+					czestotliwoscLab.setVisible(false);
+					czestotliwoscCB.setVisible(false);
 					panelParametrow.setVisible(false);
 				} else {
 					trybLab.setVisible(true);
 					trybReczny.setVisible(true);
 					trybAutomatyczny.setVisible(true);
+					czestotliwoscLab.setVisible(true);
+					czestotliwoscCB.setVisible(true);
 					panelParametrow.setVisible(true);
 					zaladujUstawieniaOnOff();
 				}
@@ -282,6 +290,8 @@ public class PanelLimit extends JPanel {
 		this.add(tytul);
 		this.add(wlacznikLab);
 		this.add(trybLab);
+		this.add(czestotliwoscLab);
+		this.add(czestotliwoscCB);
 		this.add(wlacznik);
 		this.add(trybReczny);
 		this.add(trybAutomatyczny);
@@ -317,6 +327,7 @@ public class PanelLimit extends JPanel {
 					dataTxt.setText("01-01-2018");
 				}
 			}
+			Statyczne.getUstawienia().setCzestotliwosc((String) czestotliwoscCB.getSelectedItem());
 			float kwotaLimitu = 0.0f;
 			String kwotaStr = "";
 			String[] kwotaParts = kwotaTxt.getText().split(" ");
@@ -330,6 +341,7 @@ public class PanelLimit extends JPanel {
 		}
 		Statyczne.zapiszUstawienia();
 		Statyczne.zapiszHistorie();
+		Aplikacja.resetujIloscMinut();
 	}
 
 	public void odswiezListeFaktur() {
@@ -386,8 +398,10 @@ public class PanelLimit extends JPanel {
 		if (Statyczne.getUstawienia().isLimitOn()) {
 			wlacznik.setSelected(true);
 			trybLab.setVisible(true);
-			trybReczny.setVisible(true);
+			trybReczny.setVisible(true);			
 			trybAutomatyczny.setVisible(true);
+			czestotliwoscLab.setVisible(true);
+			czestotliwoscCB.setVisible(true);
 			if (Statyczne.getUstawienia().getTrybLimitu() == 1) {
 				panelAutomatyczny.setVisible(true);
 				panelReczny.setVisible(false);
@@ -401,6 +415,8 @@ public class PanelLimit extends JPanel {
 			trybLab.setVisible(false);
 			trybReczny.setVisible(false);
 			trybAutomatyczny.setVisible(false);
+			czestotliwoscLab.setVisible(false);
+			czestotliwoscCB.setVisible(false);
 			if (Statyczne.getUstawienia().getTrybLimitu() == 1) {
 				panelAutomatyczny.setVisible(true);
 				panelReczny.setVisible(false);
@@ -445,6 +461,7 @@ public class PanelLimit extends JPanel {
 			break;
 		}
 		}
+		czestotliwoscCB.setSelectedItem(Statyczne.getUstawienia().getCzestotliwosc());
 		kwotaTxt.setValue(Statyczne.getUstawienia().getLimit());
 		limitNetBrut.setSelectedItem(Statyczne.getUstawienia().getLimitRodzaj());
 		odswiezListeFaktur();

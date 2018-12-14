@@ -1,6 +1,5 @@
 package Fakturowanie;
 
-import java.awt.Color;
 import java.awt.Font;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -28,8 +27,10 @@ public class PanelUstawien extends JPanel {
 	private JLabel vatLab;
 	private JLabel rokLab;
 	private JLabel iloscLab;
+	private JLabel czestotliwosciLab;
 	private Font labelFont;
 	private JComboBox<String> walutaCBox;
+	private JComboBox<String> czestotliwosciCBox;
 	private JFormattedTextField czynnikTxt;
 	private JSpinner vatSpin;
 	private JSpinner rokSpin;

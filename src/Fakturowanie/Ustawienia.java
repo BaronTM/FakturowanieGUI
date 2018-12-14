@@ -1,10 +1,8 @@
 package Fakturowanie;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Date;
@@ -21,6 +19,8 @@ public class Ustawienia implements Serializable{
 	private String[] walutyDoWyboru = {"PLN", "USD", "EUR", "GBP"};
 	//------- Limity
 	private String[] rodzajeLimitu = {"NETTO", "BRUTTO"};
+	private String[] dostepneCzestotliwosci = {"GODZINA", "30 MINUT", "15 MINUT", "10 MINUT", "5 MINUT"};
+	private String czestotliwosc;
 	private float limit;
 	private String limitRodzaj;
 	private boolean limitOn;
@@ -37,6 +37,7 @@ public class Ustawienia implements Serializable{
 		rok = 2018;
 		limit = 10000.00f;
 		limitRodzaj = "BRUTTO";
+		czestotliwosc = "GODZINA";
 		limitOn = false;
 		trybLimitu = 1;
 		sprawdzajSumujac = 1;
@@ -73,6 +74,14 @@ public class Ustawienia implements Serializable{
 	
 	public String[] getRodzajeLimitu() {
 		return rodzajeLimitu;
+	}
+	
+	public String[] getDostepneCzestotliwosci() {
+		return dostepneCzestotliwosci;
+	}
+	
+	public String getCzestotliwosc() {
+		return czestotliwosc;
 	}
 	
 	public float getLimit() {
@@ -121,6 +130,10 @@ public class Ustawienia implements Serializable{
 	
 	public void setDomyslnyWystawca(Wystawca domyslnyWystawca) {
 		this.domyslnyWystawca = domyslnyWystawca;
+	}
+	
+	public void setCzestotliwosc(String czestotliwosc) {
+		this.czestotliwosc = czestotliwosc;
 	}
 	
 	public void setLimit(float limit) {
