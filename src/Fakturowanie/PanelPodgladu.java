@@ -158,6 +158,7 @@ public class PanelPodgladu extends JPanel {
 		panelKlienta = new JPanel();
 		panelKlienta.setLayout(new BorderLayout());
 		panelKlienta.add(klientLab, BorderLayout.CENTER);
+		panelKlienta.add(etykietaKlienta, BorderLayout.SOUTH);
 		panelKlienta.setBackground(Statyczne.getKolor());
 
 		panelPodEtykiety = new JPanel();

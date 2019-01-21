@@ -20,7 +20,7 @@ public class PanelFunkcyjny extends JPanel{
 		
 		tytul = new JLabel("PROGRAM DO FAKTUROWANIA");
 		tytul.setFont(new Font("TimesRoman", Font.BOLD, 30));
-		tytul.setBounds(120, 20, 500, 40);
+		tytul.setBounds(95, 20, 550, 40);
 		tytul.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		wizytowka = new JTextArea();
@@ -28,7 +28,7 @@ public class PanelFunkcyjny extends JPanel{
 		wizytowka.setFont(new Font("TimesRoman", Font.BOLD, 20));
 		wizytowka.setEditable(false);
 		wizytowka.setBackground(Statyczne.getKolor());
-		wizytowka.setBounds(400, 550, 300, 120);
+		wizytowka.setBounds(350, 550, 370, 120);
 		
 		this.add(tytul);
 		this.add(wizytowka);
